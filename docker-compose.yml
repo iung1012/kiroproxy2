@@ -1,0 +1,127 @@
+services:
+
+  # ── 1. kirobug ───────────────────────────────────────────────────────────────
+  #    Painel web para registro automático de contas Kiro em massa
+  kirobug:
+    build:
+      context: ./kirobug
+      dockerfile: Dockerfile
+      args:
+        CAMOUFOX_VERSION: ${CAMOUFOX_VERSION:-135.0.1}
+        CAMOUFOX_RELEASE: ${CAMOUFOX_RELEASE:-beta.24}
+    container_name: kirobug
+    restart: unless-stopped
+    init: true
+    environment:
+      HOST: 0.0.0.0
+      PORT: "3000"
+      APP_RELOAD: "0"
+      APP_RUNTIME_DIR: /runtime
+      APP_ENABLE_SOLVER: "1"
+      SOLVER_PORT: "8889"
+      SOLVER_BIND_HOST: 127.0.0.1
+      LOCAL_SOLVER_URL: http://127.0.0.1:8889
+      SOLVER_BROWSER_TYPE: ${SOLVER_BROWSER_TYPE:-camoufox}
+      PLAYWRIGHT_HEADLESS: "1"
+    expose:
+      - "3000"
+    volumes:
+      - ./data/kirobug:/runtime
+      - credentials:/shared/credentials
+    shm_size: "1gb"
+    networks:
+      - kiro-net
+    healthcheck:
+      test: ["CMD", "python", "-c",
+             "import urllib.request; urllib.request.urlopen('http://localhost:3000/api/accounts/stats', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      start_period: 90s
+      retries: 5
+
+  # ── 2. bridge ────────────────────────────────────────────────────────────────
+  #    Exporta credenciais Kiro do kirobug → accounts.json para o gateway
+  #    Roda em loop a cada SYNC_INTERVAL segundos
+  bridge:
+    build:
+      context: ./bridge
+    container_name: kiro-bridge
+    restart: unless-stopped
+    environment:
+      KIROBUG_URL: http://kirobug:3000
+      KIROBUG_API_KEY: ${KIROBUG_API_KEY:-}
+      CREDENTIALS_DIR: /shared/credentials
+      SYNC_INTERVAL: ${SYNC_INTERVAL:-300}
+    volumes:
+      - credentials:/shared/credentials
+    depends_on:
+      kirobug:
+        condition: service_healthy
+    networks:
+      - kiro-net
+
+  # ── 3. kiro-gateway ──────────────────────────────────────────────────────────
+  #    Proxy de API compatível com OpenAI/Anthropic usando contas Kiro
+  kiro-gateway:
+    build:
+      context: ./kiro-gateway
+      dockerfile: Dockerfile
+    container_name: kiro-gateway
+    restart: unless-stopped
+    environment:
+      SERVER_HOST: 0.0.0.0
+      SERVER_PORT: "8000"
+      PROXY_API_KEY: ${PROXY_API_KEY}
+      ACCOUNT_SYSTEM: "true"
+      ACCOUNTS_CONFIG_FILE: /shared/credentials/accounts.json
+      KIRO_REGION: ${KIRO_REGION:-us-east-1}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      DEBUG_MODE: ${DEBUG_MODE:-off}
+      FAKE_REASONING: ${FAKE_REASONING:-true}
+      FAKE_REASONING_MAX_TOKENS: ${FAKE_REASONING_MAX_TOKENS:-4000}
+      WEB_SEARCH_ENABLED: ${WEB_SEARCH_ENABLED:-true}
+      AUTO_TRIM_PAYLOAD: ${AUTO_TRIM_PAYLOAD:-false}
+      FIRST_TOKEN_TIMEOUT: ${FIRST_TOKEN_TIMEOUT:-15}
+      FIRST_TOKEN_MAX_RETRIES: ${FIRST_TOKEN_MAX_RETRIES:-3}
+    expose:
+      - "8000"
+    volumes:
+      - credentials:/shared/credentials:ro
+    depends_on:
+      - bridge
+    networks:
+      - kiro-net
+    healthcheck:
+      test: ["CMD", "python", "-c",
+             "import httpx; httpx.get('http://localhost:8000/health', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      start_period: 15s
+      retries: 3
+
+  # ── 4. nginx ─────────────────────────────────────────────────────────────────
+  #    Ponto de entrada único na porta 80
+  #    /        → kirobug  (painel de gerenciamento)
+  #    /v1/     → kiro-gateway (API OpenAI/Anthropic)
+  #    /health  → kiro-gateway (healthcheck)
+  nginx:
+    image: nginx:alpine
+    container_name: kiro-nginx
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-80}:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - kirobug
+      - kiro-gateway
+    networks:
+      - kiro-net
+
+# ── Volumes e redes ──────────────────────────────────────────────────────────
+volumes:
+  credentials:
+
+networks:
+  kiro-net:
+    driver: bridge
