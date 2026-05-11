@@ -283,7 +283,7 @@ def _prepare_register_request(req: RegisterTaskRequest) -> RegisterTaskRequest:
     )
     if mail_provider == "luckmail":
         platform = prepared.platform
-        if platform in ("tavily", "openblocklabs"):
+        if platform in ("tavily",):
             raise HTTPException(400, f"LuckMail 渠道暂时不支持 {platform} 项目注册")
 
         mapping = {
