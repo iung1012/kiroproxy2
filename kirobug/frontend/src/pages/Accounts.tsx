@@ -1642,20 +1642,20 @@ export default function Accounts() {
               </DetailSection>
             ) : null}
             {currentPlatform === 'chatgpt' ? (
-              <DetailSection title=”Estado Real Local”>
+              <DetailSection title="Estado Real Local">
                 {currentAccount.chatgptLocal && Object.keys(currentAccount.chatgptLocal).length > 0 ? (
                   <LocalProbeSummary probe={currentAccount.chatgptLocal} />
                 ) : (
-                  <Text type=”secondary”>Ainda não sondado. Clique em “Sondar estado local” no menu de ações.</Text>
+                  <Text type="secondary">Ainda não sondado. Clique em "Sondar estado local" no menu de ações.</Text>
                 )}
               </DetailSection>
             ) : null}
             {currentPlatform === 'chatgpt' ? (
-              <DetailSection title=”Estado CLIProxyAPI”>
+              <DetailSection title="Estado CLIProxyAPI">
                 {currentAccount.cliproxySync && Object.keys(currentAccount.cliproxySync).length > 0 ? (
                   <CliproxySyncSummary sync={currentAccount.cliproxySync} />
                 ) : (
-                  <Text type=”secondary”>Ainda não sincronizado. Clique em “Sincronizar CLIProxyAPI” no menu de ações.</Text>
+                  <Text type="secondary">Ainda não sincronizado. Clique em "Sincronizar CLIProxyAPI" no menu de ações.</Text>
                 )}
               </DetailSection>
             ) : null}
