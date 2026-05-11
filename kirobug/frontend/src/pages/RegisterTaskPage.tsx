@@ -234,8 +234,8 @@ export default function RegisterTaskPage() {
   return (
     <div style={{ maxWidth: 800 }}>
       <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: 24, fontWeight: 'bold', margin: 0 }}>注册任务</h1>
-        <p style={{ color: '#7a8ba3', marginTop: 4 }}>创建账号自动注册任务</p>
+        <h1 style={{ fontSize: 24, fontWeight: 'bold', margin: 0 }}>Tarefa de Registro</h1>
+        <p style={{ color: '#7a8ba3', marginTop: 4 }}>Criar tarefa de registro automático de contas</p>
       </div>
 
       <Form form={form} layout="vertical" onFinish={submit} initialValues={{
@@ -257,8 +257,8 @@ export default function RegisterTaskPage() {
         maliapi_auto_domain_strategy: 'balanced',
         solver_url: 'http://localhost:8889',
       }}>
-        <Card title="基本配置" style={{ marginBottom: 16 }}>
-          <Form.Item name="platform" label="平台" rules={[{ required: true }]}>
+        <Card title="Configuração Básica" style={{ marginBottom: 16 }}>
+          <Form.Item name="platform" label="Plataforma" rules={[{ required: true }]}>
             <Select
               options={[
                 { value: 'chatgpt', label: 'ChatGPT' },
@@ -270,31 +270,31 @@ export default function RegisterTaskPage() {
               ]}
             />
           </Form.Item>
-          <Form.Item name="executor_type" label="执行器" rules={[{ required: true }]}>
+          <Form.Item name="executor_type" label="Executor" rules={[{ required: true }]}>
             <Select options={executorOptions} />
           </Form.Item>
-          <Form.Item name="captcha_solver" label="验证码" rules={[{ required: true }]}>
+          <Form.Item name="captcha_solver" label="CAPTCHA" rules={[{ required: true }]}>
             <Select
               options={[
                 { value: 'yescaptcha', label: 'YesCaptcha' },
-                { value: 'local_solver', label: '本地 Solver (Camoufox)' },
-                { value: 'manual', label: '手动' },
+                { value: 'local_solver', label: 'Solver Local (Camoufox)' },
+                { value: 'manual', label: 'Manual' },
               ]}
             />
           </Form.Item>
           <Space style={{ width: '100%' }}>
-            <Form.Item name="count" label="批量数量" style={{ flex: 1 }}>
+            <Form.Item name="count" label="Quantidade" style={{ flex: 1 }}>
               <Input type="number" min={1} />
             </Form.Item>
-            <Form.Item name="concurrency" label="并发数" style={{ flex: 1 }}>
+            <Form.Item name="concurrency" label="Concorrência" style={{ flex: 1 }}>
               <Input type="number" min={1} />
             </Form.Item>
           </Space>
           <Space style={{ width: '100%' }}>
-            <Form.Item name="register_delay_seconds" label="每个注册延迟(秒)" style={{ flex: 1 }}>
+            <Form.Item name="register_delay_seconds" label="Atraso por registro (s)" style={{ flex: 1 }}>
               <InputNumber min={0} precision={1} step={0.5} style={{ width: '100%' }} placeholder="0" />
             </Form.Item>
-            <Form.Item name="proxy" label="代理 (可选)" style={{ flex: 1 }}>
+            <Form.Item name="proxy" label="Proxy (opcional)" style={{ flex: 1 }}>
               <Input placeholder="http://user:pass@host:port" />
             </Form.Item>
           </Space>
@@ -308,12 +308,12 @@ export default function RegisterTaskPage() {
           )}
         </Card>
 
-        <Card title="邮箱配置" style={{ marginBottom: 16 }}>
-          <Form.Item name="mail_provider" label="邮箱服务" rules={[{ required: true }]}>
+        <Card title="Configuração de Email" style={{ marginBottom: 16 }}>
+          <Form.Item name="mail_provider" label="Serviço de Email" rules={[{ required: true }]}>
             <Select
               options={[
                 { value: 'luckmail', label: 'LuckMail' },
-                { value: 'mail_import', label: '邮箱导入' },
+                { value: 'mail_import', label: 'Importar Email' },
                 { value: 'moemail', label: 'MoeMail (sall.cc)' },
                 { value: 'tempmail_lol', label: 'TempMail.lol' },
                 { value: 'skymail', label: 'SkyMail (CloudMail)' },
@@ -329,11 +329,11 @@ export default function RegisterTaskPage() {
             />
           </Form.Item>
           {mailProviderRaw === 'mail_import' && (
-            <Form.Item name="mail_import_source" label="导入类型" rules={[{ required: true }]}>
+            <Form.Item name="mail_import_source" label="Tipo de importação" rules={[{ required: true }]}>
               <Select
                 options={[
-                  { value: 'microsoft', label: '微软邮箱（Outlook / Hotmail）' },
-                  { value: 'applemail', label: 'AppleMail / 小苹果' },
+                  { value: 'microsoft', label: 'Microsoft (Outlook / Hotmail)' },
+                  { value: 'applemail', label: 'AppleMail' },
                 ]}
               />
             </Form.Item>
@@ -341,12 +341,12 @@ export default function RegisterTaskPage() {
           {mailProvider === 'microsoft' && (
             <Form.Item
               name="outlook_backend"
-              label="微软收信方式"
-              extra="默认使用 Graph；若账号没有 OAuth 凭据，运行时会自动回退到 IMAP。"
+              label="Método de recebimento Microsoft"
+              extra="Padrão: Graph. Se a conta não tiver credenciais OAuth, cai automaticamente para IMAP."
             >
               <Select
                 options={[
-                  { value: 'graph', label: 'Graph（默认）' },
+                  { value: 'graph', label: 'Graph (padrão)' },
                   { value: 'imap', label: 'IMAP' },
                 ]}
               />
@@ -360,36 +360,36 @@ export default function RegisterTaskPage() {
               <Form.Item name="skymail_token" label="Authorization Token">
                 <Input.Password placeholder="Bearer xxxxx" />
               </Form.Item>
-              <Form.Item name="skymail_domain" label="邮箱域名">
+              <Form.Item name="skymail_domain" label="Domínio de email">
                 <Input placeholder="mail.example.com" />
               </Form.Item>
             </>
           )}
           {mailProvider === 'cloudmail' && (
             <>
-              <Form.Item name="cloudmail_api_base" label="API Base" rules={[{ required: true, message: '请输入 CloudMail API 地址' }]}>
+              <Form.Item name="cloudmail_api_base" label="API Base" rules={[{ required: true, message: 'Insira o endereço da API CloudMail' }]}>
                 <Input placeholder="https://cloudmail.example.com" />
               </Form.Item>
-              <Form.Item name="cloudmail_admin_email" label="管理员邮箱（可选）" extra="留空自动使用 admin@域名">
+              <Form.Item name="cloudmail_admin_email" label="Email do admin (opcional)" extra="Deixe em branco para usar admin@domínio automaticamente">
                 <Input placeholder="admin@example.com" />
               </Form.Item>
-              <Form.Item name="cloudmail_admin_password" label="管理员密码" rules={[{ required: true, message: '请输入 CloudMail 管理员密码' }]}>
+              <Form.Item name="cloudmail_admin_password" label="Senha do admin" rules={[{ required: true, message: 'Insira a senha do admin CloudMail' }]}>
                 <Input.Password placeholder="admin password" />
               </Form.Item>
-              <Form.Item name="cloudmail_domain" label="邮箱域名（可选）" extra="支持单个域名，或逗号分隔多个域名">
+              <Form.Item name="cloudmail_domain" label="Domínio de email (opcional)" extra="Suporta um domínio ou múltiplos separados por vírgula">
                 <Input placeholder="mail.example.com,mail2.example.com" />
               </Form.Item>
-              <Form.Item name="cloudmail_subdomain" label="子域名（可选）">
+              <Form.Item name="cloudmail_subdomain" label="Subdomínio (opcional)">
                 <Input placeholder="pool-a" />
               </Form.Item>
-              <Form.Item name="cloudmail_timeout" label="请求超时秒数">
+              <Form.Item name="cloudmail_timeout" label="Timeout da requisição (s)">
                 <InputNumber min={5} max={120} style={{ width: '100%' }} />
               </Form.Item>
             </>
           )}
           {mailProvider === 'laoudo' && (
             <>
-              <Form.Item name="laoudo_email" label="邮箱地址">
+              <Form.Item name="laoudo_email" label="Endereço de email">
                 <Input placeholder="xxx@laoudo.com" />
               </Form.Item>
               <Form.Item name="laoudo_account_id" label="Account ID">
@@ -408,10 +408,10 @@ export default function RegisterTaskPage() {
               <Form.Item name="maliapi_api_key" label="API Key">
                 <Input.Password placeholder="AC-..." />
               </Form.Item>
-              <Form.Item name="maliapi_domain" label="邮箱域名（可选）">
+              <Form.Item name="maliapi_domain" label="Domínio de email (opcional)">
                 <Input placeholder="example.com" />
               </Form.Item>
-              <Form.Item name="maliapi_auto_domain_strategy" label="自动域名策略">
+              <Form.Item name="maliapi_auto_domain_strategy" label="Estratégia de domínio automático">
                 <Select
                   options={[
                     { value: 'balanced', label: 'balanced' },
@@ -429,19 +429,19 @@ export default function RegisterTaskPage() {
               </Form.Item>
               <Form.Item
                 name="applemail_pool_dir"
-                label="邮箱池目录"
-                extra="默认读取项目根目录下的 mail 目录。"
+                label="Diretório do pool de emails"
+                extra="Padrão: diretório 'mail' na raiz do projeto."
               >
                 <Input placeholder="mail" />
               </Form.Item>
               <Form.Item
                 name="applemail_pool_file"
-                label="邮箱池文件（可选）"
-                extra="留空会自动使用目录中最新的 .json/.txt 文件；JSON 内容导入请到全局配置页操作。"
+                label="Arquivo do pool (opcional)"
+                extra="Deixe em branco para usar automaticamente o .json/.txt mais recente do diretório."
               >
                 <Input placeholder="applemail_20260403.json" />
               </Form.Item>
-              <Form.Item name="applemail_mailboxes" label="轮询文件夹">
+              <Form.Item name="applemail_mailboxes" label="Pastas para verificar">
                 <Input placeholder="INBOX,Junk" />
               </Form.Item>
             </>
@@ -456,8 +456,8 @@ export default function RegisterTaskPage() {
               </Form.Item>
               <Form.Item
                 name="gptmail_domain"
-                label="邮箱域名（可选）"
-                extra="已知当前可用域名时可直接本地拼装随机地址，省掉一次 generate-email 请求"
+                label="Domínio de email (opcional)"
+                extra="Se conhecido, gera endereço aleatório localmente sem requisição extra."
               >
                 <Input placeholder="example.com" />
               </Form.Item>
@@ -465,22 +465,22 @@ export default function RegisterTaskPage() {
           )}
           {mailProvider === 'opentrashmail' && (
             <>
-              <Form.Item name="opentrashmail_api_url" label="API URL" rules={[{ required: true, message: '请输入 OpenTrashMail 地址' }]}>
+              <Form.Item name="opentrashmail_api_url" label="API URL" rules={[{ required: true, message: 'Insira o endereço do OpenTrashMail' }]}>
                 <Input placeholder="http://mail.example.com:8085" />
               </Form.Item>
               <Form.Item
                 name="opentrashmail_domain"
-                label="邮箱域名（可选）"
-                extra="已知 OpenTrashMail 当前启用域名时可直接本地拼装随机地址；留空则调用 /api/random 自动获取"
+                label="Domínio de email (opcional)"
+                extra="Se conhecido, gera endereço localmente; senão chama /api/random."
               >
                 <Input placeholder="xiyoufm.com" />
               </Form.Item>
               <Form.Item
                 name="opentrashmail_password"
-                label="站点密码（可选）"
-                extra="当 OpenTrashMail 开启 PASSWORD 保护时填写，会自动追加到 JSON API 查询参数"
+                label="Senha do site (opcional)"
+                extra="Preencha quando o OpenTrashMail tiver proteção por senha."
               >
-                <Input.Password placeholder="留空表示未启用" />
+                <Input.Password placeholder="Deixe em branco se não habilitado" />
               </Form.Item>
             </>
           )}
@@ -497,23 +497,23 @@ export default function RegisterTaskPage() {
               </Form.Item>
               <Form.Item
                 name="cfworker_domain_override"
-                label="单次任务指定域名（可选）"
-                extra="留空时将从设置页已启用的域名列表中随机选择。"
+                label="Domínio específico para esta tarefa (opcional)"
+                extra="Deixe em branco para selecionar aleatoriamente da lista de domínios habilitados."
               >
                 <Input placeholder="example.com" />
               </Form.Item>
               <Form.Item
                 name="cfworker_subdomain"
-                label="子域名（可选）"
-                extra="填写后将生成 xxx@子域名.根域名；若启用随机子域名，则会生成 xxx@随机值.子域名.根域名。"
+                label="Subdomínio (opcional)"
+                extra="Gera xxx@subdomínio.domínio; com subdomínio aleatório: xxx@valor.subdomínio.domínio."
               >
                 <Input placeholder="mail / pool-a" />
               </Form.Item>
               <Form.Item name="cfworker_random_subdomain" valuePropName="checked">
-                <Checkbox>每次注册前随机生成一层子域名</Checkbox>
+                <Checkbox>Gerar subdomínio aleatório a cada registro</Checkbox>
               </Form.Item>
               <Form.Item name="cfworker_random_name_subdomain" valuePropName="checked">
-                <Checkbox>使用随机姓名作为子域名</Checkbox>
+                <Checkbox>Usar nome aleatório como subdomínio</Checkbox>
               </Form.Item>
               <Form.Item name="cfworker_fingerprint" label="Fingerprint (可选)">
                 <Input placeholder="cfb82279f..." />
@@ -522,42 +522,42 @@ export default function RegisterTaskPage() {
           )}
           {mailProvider === 'freemail' && (
             <>
-              <Form.Item name="freemail_api_url" label="API URL" rules={[{ required: true, message: '请输入 Freemail API 地址' }]}>
+              <Form.Item name="freemail_api_url" label="API URL" rules={[{ required: true, message: 'Insira o endereço da API Freemail' }]}>
                 <Input placeholder="https://mail.example.com" />
               </Form.Item>
-              <Form.Item name="freemail_admin_token" label="管理员令牌（可选）">
+              <Form.Item name="freemail_admin_token" label="Token de admin (opcional)">
                 <Input.Password placeholder="JWT_TOKEN" />
               </Form.Item>
-              <Form.Item name="freemail_username" label="用户名（可选）">
+              <Form.Item name="freemail_username" label="Usuário (opcional)">
                 <Input placeholder="admin" />
               </Form.Item>
-              <Form.Item name="freemail_password" label="密码（可选）">
+              <Form.Item name="freemail_password" label="Senha (opcional)">
                 <Input.Password placeholder="password" />
               </Form.Item>
-              <Form.Item name="freemail_domain" label="邮箱域名（可选）" extra="填写后会优先使用该域名生成邮箱">
+              <Form.Item name="freemail_domain" label="Domínio de email (opcional)" extra="Se preenchido, será usado preferencialmente para gerar emails">
                 <Input placeholder="example.com" />
               </Form.Item>
             </>
           )}
           {mailProvider === 'luckmail' && (
             <>
-              <Form.Item name="luckmail_base_url" label="平台地址">
+              <Form.Item name="luckmail_base_url" label="Endereço da plataforma">
                 <Input placeholder="https://mails.luckyous.com" />
               </Form.Item>
               <Form.Item name="luckmail_api_key" label="API Key">
                 <Input.Password placeholder="ak_..." />
               </Form.Item>
-              <Form.Item name="luckmail_email_type" label="邮箱类型（可选）">
+              <Form.Item name="luckmail_email_type" label="Tipo de email (opcional)">
                 <Select
                   options={[
-                    { value: '', label: '自动 / 留空' },
-                    { value: 'ms_graph', label: '微软邮箱 - Graph' },
-                    { value: 'ms_imap', label: '微软邮箱 - IMAP' },
-                    { value: 'self_built', label: '自建邮箱' },
+                    { value: '', label: 'Automático / em branco' },
+                    { value: 'ms_graph', label: 'Microsoft - Graph' },
+                    { value: 'ms_imap', label: 'Microsoft - IMAP' },
+                    { value: 'self_built', label: 'Email próprio' },
                   ]}
                 />
               </Form.Item>
-              <Form.Item name="luckmail_domain" label="邮箱域名（可选）">
+              <Form.Item name="luckmail_domain" label="Domínio de email (opcional)">
                 <Input placeholder="outlook.com" />
               </Form.Item>
             </>
@@ -565,33 +565,33 @@ export default function RegisterTaskPage() {
         </Card>
 
         {platform === 'chatgpt' && (
-          <Card title="ChatGPT 手机验证" style={{ marginBottom: 16 }}>
+          <Card title="ChatGPT — Verificação por telefone" style={{ marginBottom: 16 }}>
             <Text type="secondary" style={{ display: 'block', marginBottom: 12 }}>
-              仅在 OAuth 流程进入 `add_phone` 时使用，用于自动取号并轮询短信验证码。
+              Usado apenas quando o fluxo OAuth chega ao passo `add_phone`. Obtém número automaticamente e aguarda o SMS.
             </Text>
             <Form.Item name="smstome_cookie" label="SMSToMe Cookie">
               <Input.Password placeholder="cf_clearance=...; PHPSESSID=..." />
             </Form.Item>
-            <Form.Item name="smstome_country_slugs" label="国家列表">
+            <Form.Item name="smstome_country_slugs" label="Lista de países">
               <Input placeholder="united-kingdom,poland,finland" />
             </Form.Item>
-            <Form.Item name="smstome_phone_attempts" label="手机号尝试次数">
+            <Form.Item name="smstome_phone_attempts" label="Tentativas de número de telefone">
               <Input placeholder="3" />
             </Form.Item>
-            <Form.Item name="smstome_otp_timeout_seconds" label="短信等待秒数">
+            <Form.Item name="smstome_otp_timeout_seconds" label="Timeout para SMS (s)">
               <Input placeholder="45" />
             </Form.Item>
-            <Form.Item name="smstome_poll_interval_seconds" label="轮询间隔秒数">
+            <Form.Item name="smstome_poll_interval_seconds" label="Intervalo de polling (s)">
               <Input placeholder="5" />
             </Form.Item>
-            <Form.Item name="smstome_sync_max_pages_per_country" label="每国同步页数">
+            <Form.Item name="smstome_sync_max_pages_per_country" label="Páginas sincronizadas por país">
               <Input placeholder="5" />
             </Form.Item>
           </Card>
         )}
 
         {captchaSolver === 'yescaptcha' && (
-          <Card title="验证码配置" style={{ marginBottom: 16 }}>
+          <Card title="Configuração de CAPTCHA" style={{ marginBottom: 16 }}>
             <Form.Item name="yescaptcha_key" label="YesCaptcha Key">
               <Input />
             </Form.Item>
@@ -599,7 +599,7 @@ export default function RegisterTaskPage() {
         )}
 
         {captchaSolver === 'local_solver' && (
-          <Card title="本地 Solver 配置" style={{ marginBottom: 16 }}>
+          <Card title="Configuração do Solver Local" style={{ marginBottom: 16 }}>
             <Form.Item name="solver_url" label="Solver URL">
               <Input />
             </Form.Item>
@@ -610,14 +610,14 @@ export default function RegisterTaskPage() {
         )}
 
         <Button type="primary" htmlType="submit" block disabled={polling} icon={polling ? <LoadingOutlined /> : <PlayCircleOutlined />}>
-          {polling ? '注册中...' : '开始注册'}
+          {polling ? 'Registrando...' : 'Iniciar Registro'}
         </Button>
       </Form>
 
       {task && (
         <Card title={
           <Space>
-            <span>任务状态</span>
+            <span>Status da Tarefa</span>
             <Tag color={
               task.status === 'done' ? 'success' :
               task.status === 'stopped' ? 'warning' :
@@ -628,15 +628,15 @@ export default function RegisterTaskPage() {
           </Space>
         } style={{ marginTop: 16 }}>
           <Descriptions column={1} size="small">
-            <Descriptions.Item label="任务 ID">
+            <Descriptions.Item label="Task ID">
               <Text copyable style={{ fontFamily: 'monospace' }}>{task.id}</Text>
             </Descriptions.Item>
-            <Descriptions.Item label="进度">{task.progress}</Descriptions.Item>
-            <Descriptions.Item label="跳过">{task.skipped ?? 0}</Descriptions.Item>
+            <Descriptions.Item label="Progresso">{task.progress}</Descriptions.Item>
+            <Descriptions.Item label="Pulados">{task.skipped ?? 0}</Descriptions.Item>
           </Descriptions>
           {task.success != null && (
             <div style={{ marginTop: 8, color: '#10b981' }}>
-              <CheckCircleOutlined /> 成功 {task.success} 个
+              <CheckCircleOutlined /> Sucesso: {task.success}
             </div>
           )}
           {task.errors?.length > 0 && (

@@ -89,44 +89,44 @@ function formatCreatedAt(value?: string) {
 function authStateMeta(state?: string) {
   switch (state) {
     case 'access_token_valid':
-      return { color: 'success', label: 'AT有效' }
+      return { color: 'success', label: 'AT válido' }
     case 'account_deactivated':
-      return { color: 'error', label: '已失效' }
+      return { color: 'error', label: 'Inválido' }
     case 'access_token_invalidated':
-      return { color: 'error', label: 'AT失效' }
+      return { color: 'error', label: 'AT inválido' }
     case 'unauthorized':
-      return { color: 'error', label: '未授权' }
+      return { color: 'error', label: 'Não autorizado' }
     case 'missing_access_token':
-      return { color: 'default', label: '缺少AT' }
+      return { color: 'default', label: 'AT ausente' }
     case 'banned_like':
-      return { color: 'error', label: '疑似封禁' }
+      return { color: 'error', label: 'Possível banimento' }
     case 'probe_failed':
-      return { color: 'warning', label: '探测失败' }
+      return { color: 'warning', label: 'Falha na sondagem' }
     default:
-      return { color: 'default', label: '未探测' }
+      return { color: 'default', label: 'Não sondado' }
   }
 }
 
 function codexStateMeta(state?: string) {
   switch (state) {
     case 'usable':
-      return { color: 'success', label: '可用' }
+      return { color: 'success', label: 'Disponível' }
     case 'account_deactivated':
-      return { color: 'error', label: '已失效' }
+      return { color: 'error', label: 'Inválido' }
     case 'access_token_invalidated':
-      return { color: 'error', label: 'AT失效' }
+      return { color: 'error', label: 'AT inválido' }
     case 'unauthorized':
-      return { color: 'error', label: '未授权' }
+      return { color: 'error', label: 'Não autorizado' }
     case 'payment_required':
-      return { color: 'warning', label: '需付费/权限' }
+      return { color: 'warning', label: 'Requer pagamento' }
     case 'quota_exhausted':
-      return { color: 'warning', label: '额度耗尽' }
+      return { color: 'warning', label: 'Cota esgotada' }
     case 'skipped_auth_invalid':
-      return { color: 'default', label: '未测' }
+      return { color: 'default', label: 'Não testado' }
     case 'probe_failed':
-      return { color: 'warning', label: '探测失败' }
+      return { color: 'warning', label: 'Falha na sondagem' }
     default:
-      return { color: 'default', label: '未探测' }
+      return { color: 'default', label: 'Não sondado' }
   }
 }
 
@@ -143,7 +143,7 @@ function planMeta(plan?: string) {
     case 'free':
       return { color: 'default', label: 'Free' }
     default:
-      return { color: 'default', label: '未知' }
+      return { color: 'default', label: 'Desconhecido' }
   }
 }
 
@@ -246,99 +246,99 @@ function LocalProbeSummary({ probe }: { probe: any }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-        <Tag color={authStateMeta(auth.state).color}>认证: {authStateMeta(auth.state).label}</Tag>
-        <Tag color={planMeta(subscription.plan).color}>订阅: {planMeta(subscription.plan).label}</Tag>
+        <Tag color={authStateMeta(auth.state).color}>Auth: {authStateMeta(auth.state).label}</Tag>
+        <Tag color={planMeta(subscription.plan).color}>Assinatura: {planMeta(subscription.plan).label}</Tag>
         <Tag color={codexStateMeta(codex.state).color}>Codex: {codexStateMeta(codex.state).label}</Tag>
       </div>
-      <SummaryField label="探测时间" value={checkedAt ? formatSyncTime(checkedAt) : ''} />
-      <SummaryField label="认证信息" value={auth.message} code />
-      <SummaryField label="工作区套餐" value={subscription.workspace_plan_type} />
-      <SummaryField label="Codex 信息" value={codex.message} code />
+      <SummaryField label="Hora da sondagem" value={checkedAt ? formatSyncTime(checkedAt) : ''} />
+      <SummaryField label="Informações de auth" value={auth.message} code />
+      <SummaryField label="Plano do workspace" value={subscription.workspace_plan_type} />
+      <SummaryField label="Informações do Codex" value={codex.message} code />
     </div>
   )
 }
 
 function cliproxyStateMeta(sync: any) {
   if (!sync || Object.keys(sync).length === 0) {
-    return { color: 'default', label: '未同步' }
+    return { color: 'default', label: 'Não sincronizado' }
   }
   if (sync.remote_state === 'unreachable') {
-    return { color: 'error', label: '不可连接' }
+    return { color: 'error', label: 'Inacessível' }
   }
   if (sync.remote_state === 'not_found') {
-    return { color: 'default', label: '远端未发现' }
+    return { color: 'default', label: 'Não encontrado remotamente' }
   }
   if (!sync.uploaded) {
-    return { color: 'default', label: '未发现' }
+    return { color: 'default', label: 'Não encontrado' }
   }
   if (sync.remote_state === 'usable') {
-    return { color: 'success', label: '远端可用' }
+    return { color: 'success', label: 'Disponível remotamente' }
   }
   if (sync.remote_state === 'account_deactivated') {
-    return { color: 'error', label: '远端已失效' }
+    return { color: 'error', label: 'Inválido remotamente' }
   }
   if (sync.remote_state === 'access_token_invalidated') {
-    return { color: 'error', label: '远端AT失效' }
+    return { color: 'error', label: 'AT inválido remotamente' }
   }
   if (sync.remote_state === 'unauthorized') {
-    return { color: 'error', label: '远端未授权' }
+    return { color: 'error', label: 'Não autorizado remotamente' }
   }
   if (sync.remote_state === 'payment_required') {
-    return { color: 'warning', label: '远端需付费/权限' }
+    return { color: 'warning', label: 'Requer pagamento remotamente' }
   }
   if (sync.remote_state === 'quota_exhausted') {
-    return { color: 'warning', label: '远端额度耗尽' }
+    return { color: 'warning', label: 'Cota remota esgotada' }
   }
   if (sync.status === 'active') {
-    return { color: 'processing', label: '远端Active' }
+    return { color: 'processing', label: 'Ativo remotamente' }
   }
   if (sync.status === 'refreshing') {
-    return { color: 'processing', label: '远端刷新中' }
+    return { color: 'processing', label: 'Atualizando remotamente' }
   }
   if (sync.status === 'pending') {
-    return { color: 'default', label: '远端待处理' }
+    return { color: 'default', label: 'Pendente remotamente' }
   }
   if (sync.status === 'error') {
-    return { color: 'error', label: '远端错误' }
+    return { color: 'error', label: 'Erro remoto' }
   }
   if (sync.status === 'disabled') {
-    return { color: 'default', label: '远端禁用' }
+    return { color: 'default', label: 'Desabilitado remotamente' }
   }
-  return { color: 'default', label: '未同步' }
+  return { color: 'default', label: 'Não sincronizado' }
 }
 
 function uploadSyncMeta(sync: any) {
   if (!sync || Object.keys(sync).length === 0) {
-    return { color: 'default', label: '未上传' }
+    return { color: 'default', label: 'Não enviado' }
   }
   if (sync.uploaded || sync.uploaded_at) {
-    return { color: 'success', label: '已上传' }
+    return { color: 'success', label: 'Enviado' }
   }
   if (sync.last_attempt_ok === false) {
-    return { color: 'error', label: '失败' }
+    return { color: 'error', label: 'Falhou' }
   }
   if (sync.last_attempt_ok === true || sync.last_attempt_at) {
-    return { color: 'processing', label: '已尝试' }
+    return { color: 'processing', label: 'Tentado' }
   }
-  return { color: 'default', label: '未上传' }
+  return { color: 'default', label: 'Não enviado' }
 }
 
 function uploadSyncTitle(name: string, sync: any) {
   if (!sync || Object.keys(sync).length === 0) {
-    return `${name} 未上传`
+    return `${name} não enviado`
   }
 
   const parts: string[] = []
   if (sync.uploaded_at) {
-    parts.push(`成功时间: ${formatSyncTime(sync.uploaded_at)}`)
+    parts.push(`Hora de sucesso: ${formatSyncTime(sync.uploaded_at)}`)
   }
   if (sync.last_attempt_at) {
-    parts.push(`最近尝试: ${formatSyncTime(sync.last_attempt_at)}`)
+    parts.push(`Última tentativa: ${formatSyncTime(sync.last_attempt_at)}`)
   }
   if (sync.last_message) {
-    parts.push(`结果: ${sync.last_message}`)
+    parts.push(`Resultado: ${sync.last_message}`)
   }
-  return parts.join('\n') || `${name} 已记录状态`
+  return parts.join('\n') || `Status registrado de ${name}`
 }
 
 function CliproxySyncSummary({ sync }: { sync: any }) {
@@ -349,13 +349,13 @@ function CliproxySyncSummary({ sync }: { sync: any }) {
         <Tag color={meta.color}>{meta.label}</Tag>
         {sync?.status ? <Tag>{`status: ${sync.status}`}</Tag> : null}
       </div>
-      <SummaryField label="状态信息" value={sync?.status_message} code />
+      <SummaryField label="Informações de status" value={sync?.status_message} code />
       <SummaryField label="auth-file" value={sync?.name} />
       <SummaryField label="API URL" value={sync?.base_url} />
-      <SummaryField label="同步时间" value={sync?.last_synced_at ? formatSyncTime(sync.last_synced_at) : ''} />
-      <SummaryField label="远端刷新时间" value={sync?.last_refresh ? formatSyncTime(sync.last_refresh) : ''} />
-      <SummaryField label="下次重试时间" value={sync?.next_retry_after ? formatSyncTime(sync.next_retry_after) : ''} />
-      <SummaryField label="探测信息" value={sync?.last_probe_message} code />
+      <SummaryField label="Hora de sincronização" value={sync?.last_synced_at ? formatSyncTime(sync.last_synced_at) : ''} />
+      <SummaryField label="Hora de atualização remota" value={sync?.last_refresh ? formatSyncTime(sync.last_refresh) : ''} />
+      <SummaryField label="Próxima tentativa" value={sync?.next_retry_after ? formatSyncTime(sync.next_retry_after) : ''} />
+      <SummaryField label="Informações de sondagem" value={sync?.last_probe_message} code />
     </div>
   )
 }
@@ -384,9 +384,9 @@ function ActionMenu({ acc, onRefresh, actions }: { acc: any; onRefresh: () => vo
     if (!resultUrl) return
     try {
       await navigator.clipboard.writeText(resultUrl)
-      message.success('链接已复制')
+      message.success('Link copiado')
     } catch {
-      message.error('复制失败')
+      message.error('Falha ao copiar')
     }
   }
 
@@ -395,7 +395,7 @@ function ActionMenu({ acc, onRefresh, actions }: { acc: any; onRefresh: () => vo
     const actionLabel = actions.find((item) => item.id === actionId)?.label || actionId
     const toastKey = `account-action:${acc?.id}:${actionId}`
     setRunningActionId(actionId)
-    message.loading({ content: `${actionLabel}运行中...`, key: toastKey, duration: 0 })
+    message.loading({ content: `${actionLabel} em andamento...`, key: toastKey, duration: 0 })
 
     try {
       const r = await apiFetch(`/actions/${acc.platform}/${acc.id}/${actionId}`, {
@@ -406,35 +406,35 @@ function ActionMenu({ acc, onRefresh, actions }: { acc: any; onRefresh: () => vo
         const data = r.data || {}
         const probe = typeof data === 'object' && data ? data.probe || null : null
         const cliproxySync = typeof data === 'object' && data ? data.sync || null : null
-        message.error({ content: `${actionLabel}失败`, key: toastKey })
-        showResult(actionLabel, 'error', r.error || data.message || '操作失败', '', probe, cliproxySync)
+        message.error({ content: `${actionLabel} falhou`, key: toastKey })
+        showResult(actionLabel, 'error', r.error || data.message || 'Operação falhou', '', probe, cliproxySync)
         onRefresh()
         return
       }
       const data = r.data || {}
       if (data.url || data.checkout_url || data.cashier_url) {
         const targetUrl = data.url || data.checkout_url || data.cashier_url
-        message.success({ content: `${actionLabel}完成`, key: toastKey })
-        showResult(actionLabel, 'success', '操作成功，请在弹窗中打开或复制链接。', targetUrl)
+        message.success({ content: `${actionLabel} concluído`, key: toastKey })
+        showResult(actionLabel, 'success', 'Operação bem-sucedida, abra ou copie o link na janela.', targetUrl)
       } else {
         message.success({ content: data.message || `${actionLabel}完成`, key: toastKey })
         const probe = typeof data === 'object' && data ? data.probe || null : null
         const cliproxySync = typeof data === 'object' && data ? data.sync || null : null
         const text =
           probe
-            ? String(data.message || '操作成功')
+            ? String(data.message || 'Operação bem-sucedida')
             : cliproxySync
-            ? String(data.message || '操作成功')
+            ? String(data.message || 'Operação bem-sucedida')
             : typeof data === 'string'
             ? data
             : Object.keys(data).length > 0
               ? JSON.stringify(data, null, 2)
-              : '操作成功'
+              : 'Operação bem-sucedida'
         showResult(actionLabel, 'success', text, '', probe, cliproxySync)
       }
       onRefresh()
     } catch (e: any) {
-      const detail = e?.message ? String(e.message) : '请求失败'
+      const detail = e?.message ? String(e.message) : 'Falha na requisição'
       message.error({ content: detail, key: toastKey })
       showResult(actionLabel, 'error', detail)
     } finally {
@@ -444,7 +444,7 @@ function ActionMenu({ acc, onRefresh, actions }: { acc: any; onRefresh: () => vo
 
   const menuItems: MenuProps['items'] = actions.map((a) => ({
     key: a.id,
-    label: runningActionId === a.id ? `${a.label}（运行中）` : a.label,
+    label: runningActionId === a.id ? `${a.label} (em andamento)` : a.label,
     disabled: Boolean(runningActionId),
   }))
 
@@ -472,7 +472,7 @@ function ActionMenu({ acc, onRefresh, actions }: { acc: any; onRefresh: () => vo
         footer={[
           resultUrl ? (
             <Button key="copy" onClick={copyResultUrl}>
-              复制链接
+              Copiar Link
             </Button>
           ) : null,
           resultUrl ? (
@@ -481,11 +481,11 @@ function ActionMenu({ acc, onRefresh, actions }: { acc: any; onRefresh: () => vo
               type="primary"
               onClick={() => window.open(resultUrl, '_blank', 'noopener,noreferrer')}
             >
-              打开链接
+              Abrir Link
             </Button>
           ) : null,
           <Button key="ok" type={resultUrl ? 'default' : 'primary'} onClick={() => setResultOpen(false)}>
-            确定
+            OK
           </Button>,
         ].filter(Boolean)}
         maskClosable={false}
@@ -493,7 +493,7 @@ function ActionMenu({ acc, onRefresh, actions }: { acc: any; onRefresh: () => vo
         <Alert
           type={resultStatus}
           showIcon
-          message={resultStatus === 'success' ? '操作完成' : '操作失败'}
+          message={resultStatus === 'success' ? 'Operação concluída' : 'Operação falhou'}
           style={{ marginBottom: 12 }}
         />
         {resultProbe ? (
@@ -580,7 +580,7 @@ export default function Accounts() {
 
   const load = useCallback(async () => {
     if (createdAtStart && createdAtEnd && new Date(createdAtStart).getTime() > new Date(createdAtEnd).getTime()) {
-      message.warning('开始时间不能晚于结束时间')
+      message.warning('A data de início não pode ser posterior à data de fim')
       setAccounts([])
       setTotal(0)
       return
@@ -613,7 +613,7 @@ export default function Accounts() {
 
   const copyText = (text: string) => {
     navigator.clipboard.writeText(text)
-    message.success('已复制')
+    message.success('Copiado')
   }
 
   const getRefreshToken = (record: any): string => {
@@ -642,7 +642,7 @@ export default function Accounts() {
     }
 
     if (currentPlatform === 'kiro') {
-      const header = ['邮箱', '昵称', '登录方式', 'RefreshToken', 'ClientId', 'ClientSecret', 'Region']
+      const header = ['Email', 'Apelido', 'Login', 'RefreshToken', 'ClientId', 'ClientSecret', 'Region']
       const rows = accounts.map((a) => {
         const nickname = a.extra?.name || String(a.email || '').split('@')[0] || ''
         const provider = a.extra?.provider || 'BuilderId'
@@ -696,7 +696,7 @@ export default function Accounts() {
 
   const handleDelete = async (id: number) => {
     await apiFetch(`/accounts/${id}`, { method: 'DELETE' })
-    message.success('删除成功')
+    message.success('Excluído com sucesso')
     load()
   }
 
@@ -706,7 +706,7 @@ export default function Accounts() {
       method: 'POST',
       body: JSON.stringify({ ids: Array.from(selectedRowKeys) }),
     })
-    message.success('批量删除成功')
+    message.success('Exclusão em lote bem-sucedida')
     setSelectedRowKeys([])
     load()
   }
@@ -717,7 +717,7 @@ export default function Accounts() {
       method: 'POST',
       body: JSON.stringify({ ...values, platform: currentPlatform }),
     })
-    message.success('添加成功')
+    message.success('Adicionado com sucesso')
     setAddModalOpen(false)
     addForm.resetFields()
     load()
@@ -732,12 +732,12 @@ export default function Accounts() {
         method: 'POST',
         body: JSON.stringify({ platform: currentPlatform, lines }),
       })
-      message.success(`导入成功 ${res.created} 个`)
+      message.success(`${res.created} contas importadas com sucesso`)
       setImportModalOpen(false)
       setImportText('')
       load()
     } catch (e: any) {
-      message.error(`导入失败: ${e.message}`)
+      message.error(`Falha na importação: ${e.message}`)
     } finally {
       setImportLoading(false)
     }
@@ -840,7 +840,7 @@ export default function Accounts() {
       method: 'PATCH',
       body: JSON.stringify(values),
     })
-    message.success('保存成功')
+    message.success('Salvo com sucesso')
     setDetailModalOpen(false)
     load()
   }
@@ -946,23 +946,23 @@ export default function Accounts() {
         body: JSON.stringify(body),
       })
 
-      const actionLabel = mode === 'selected' ? '所选账号远端补传' : '远端未发现账号补传'
+      const actionLabel = mode === 'selected' ? 'Reenvio remoto selecionado' : 'Reenvio de contas não encontradas'
       if (!result.total) {
-        message.info('没有可处理的账号')
+        message.info('Nenhuma conta para processar')
       } else if (!result.failed && !result.skipped) {
-        message.success(`${actionLabel}完成：成功 ${result.success} / ${result.total}`)
+        message.success(`${actionLabel} concluído: sucesso ${result.success} / ${result.total}`)
       } else if (!result.failed) {
-        message.success(`${actionLabel}完成：成功 ${result.success}，跳过 ${result.skipped} / ${result.total}`)
+        message.success(`${actionLabel} concluído: sucesso ${result.success}, pulado ${result.skipped} / ${result.total}`)
       } else if (!result.success) {
-        message.error(`${actionLabel}失败：成功 ${result.success}，跳过 ${result.skipped} / ${result.total}`)
+        message.error(`${actionLabel} falhou: sucesso ${result.success}, pulado ${result.skipped} / ${result.total}`)
       } else {
-        message.warning(`${actionLabel}部分完成：成功 ${result.success}，跳过 ${result.skipped} / ${result.total}`)
+        message.warning(`${actionLabel} parcialmente concluído: sucesso ${result.success}, pulado ${result.skipped} / ${result.total}`)
       }
 
-      showCpaSyncResult(`${actionLabel}结果`, result)
+      showCpaSyncResult(`Resultado: ${actionLabel}`, result)
       await load()
     } catch (e: any) {
-      message.error(`CPA 上传失败: ${e.message}`)
+      message.error(`Falha no upload CPA: ${e.message}`)
     } finally {
       setCpaSyncLoading('')
     }
@@ -973,8 +973,8 @@ export default function Accounts() {
 
     const loadingKey = `${kind}_${scope}` as typeof statusSyncLoading
     const actionId = kind === 'probe' ? 'probe_local_status' : 'sync_cliproxyapi_status'
-    const actionLabel = kind === 'probe' ? '本地状态同步' : 'CLIProxyAPI 状态同步'
-    const scopeLabel = scope === 'selected' ? '所选账号' : '当前筛选账号'
+    const actionLabel = kind === 'probe' ? 'Sincronização de estado local' : 'Sincronização CLIProxyAPI'
+    const scopeLabel = scope === 'selected' ? 'Contas selecionadas' : 'Contas filtradas'
     const toastKey = `status-sync:${loadingKey}`
 
     const body: Record<string, unknown> = {
@@ -987,7 +987,7 @@ export default function Accounts() {
         .filter((value) => Number.isInteger(value) && value > 0)
 
       if (accountIds.length === 0) {
-        message.warning('请先选择要同步的账号')
+        message.warning('Selecione contas para sincronizar')
         return
       }
       body.account_ids = accountIds
@@ -998,7 +998,7 @@ export default function Accounts() {
     }
 
     setStatusSyncLoading(loadingKey)
-    message.loading({ content: `${scopeLabel}${actionLabel}进行中...`, key: toastKey, duration: 0 })
+    message.loading({ content: `${scopeLabel} — ${actionLabel} em andamento...`, key: toastKey, duration: 0 })
     try {
       const result = await apiFetch(`/actions/${currentPlatform}/${actionId}/batch`, {
         method: 'POST',
@@ -1006,19 +1006,19 @@ export default function Accounts() {
       })
 
       if (!result.total) {
-        message.info({ content: '没有可处理的账号', key: toastKey })
+        message.info({ content: 'Nenhuma conta para processar', key: toastKey })
       } else if (!result.failed) {
-        message.success({ content: `${scopeLabel}${actionLabel}完成：成功 ${result.success} / ${result.total}`, key: toastKey })
+        message.success({ content: `${scopeLabel} — ${actionLabel} concluído: sucesso ${result.success} / ${result.total}`, key: toastKey })
       } else if (!result.success) {
-        message.error({ content: `${scopeLabel}${actionLabel}失败：成功 ${result.success} / ${result.total}`, key: toastKey })
+        message.error({ content: `${scopeLabel} — ${actionLabel} falhou: sucesso ${result.success} / ${result.total}`, key: toastKey })
       } else {
-        message.warning({ content: `${scopeLabel}${actionLabel}部分完成：成功 ${result.success} / ${result.total}`, key: toastKey })
+        message.warning({ content: `${scopeLabel} — ${actionLabel} parcialmente concluído: sucesso ${result.success} / ${result.total}`, key: toastKey })
       }
 
-      showBatchActionResult(`${scopeLabel}${actionLabel}结果`, result)
+      showBatchActionResult(`Resultado: ${actionLabel}`, result)
       await load()
     } catch (e: any) {
-      message.error({ content: `${actionLabel}失败: ${e.message}`, key: toastKey })
+      message.error({ content: `${actionLabel} falhou: ${e.message}`, key: toastKey })
     } finally {
       setStatusSyncLoading('')
     }
@@ -1026,7 +1026,7 @@ export default function Accounts() {
 
   const handleBatchUploadCpa = async (scope: 'selected' | 'all') => {
     const toastKey = `batch-upload-cpa:${scope}`
-    const scopeLabel = scope === 'selected' ? '所选账号' : '当前筛选账号'
+    const scopeLabel = scope === 'selected' ? 'Contas selecionadas' : 'Contas filtradas'
 
     const body: Record<string, unknown> = {
       params: {},
@@ -1038,7 +1038,7 @@ export default function Accounts() {
         .filter((value) => Number.isInteger(value) && value > 0)
 
       if (accountIds.length === 0) {
-        message.warning('请先选择要导入 CPA 的账号')
+        message.warning('Selecione contas para importar ao CPA')
         return
       }
       body.account_ids = accountIds
@@ -1049,7 +1049,7 @@ export default function Accounts() {
     }
 
     setCpaUploadLoading(scope)
-    message.loading({ content: `${scopeLabel}导入 CPA 进行中...`, key: toastKey, duration: 0 })
+    message.loading({ content: `${scopeLabel} — Importando CPA...`, key: toastKey, duration: 0 })
     try {
       const result = await apiFetch(`/actions/${currentPlatform}/upload_cpa/batch`, {
         method: 'POST',
@@ -1057,19 +1057,19 @@ export default function Accounts() {
       })
 
       if (!result.total) {
-        message.info({ content: '没有可处理的账号', key: toastKey })
+        message.info({ content: 'Nenhuma conta para processar', key: toastKey })
       } else if (!result.failed) {
-        message.success({ content: `${scopeLabel}导入 CPA 完成：成功 ${result.success} / ${result.total}`, key: toastKey })
+        message.success({ content: `${scopeLabel} — Importação CPA concluída: sucesso ${result.success} / ${result.total}`, key: toastKey })
       } else if (!result.success) {
-        message.error({ content: `${scopeLabel}导入 CPA 失败：成功 ${result.success} / ${result.total}`, key: toastKey })
+        message.error({ content: `${scopeLabel} — Importação CPA falhou: sucesso ${result.success} / ${result.total}`, key: toastKey })
       } else {
-        message.warning({ content: `${scopeLabel}导入 CPA 部分完成：成功 ${result.success} / ${result.total}`, key: toastKey })
+        message.warning({ content: `${scopeLabel} — Importação CPA parcialmente concluída: sucesso ${result.success} / ${result.total}`, key: toastKey })
       }
 
-      showBatchActionResult(`${scopeLabel}导入 CPA 结果`, result)
+      showBatchActionResult(`Resultado: Importação CPA`, result)
       await load()
     } catch (e: any) {
-      message.error({ content: `导入 CPA 失败: ${e.message}`, key: toastKey })
+      message.error({ content: `Falha na importação CPA: ${e.message}`, key: toastKey })
     } finally {
       setCpaUploadLoading('')
     }
@@ -1084,13 +1084,13 @@ export default function Accounts() {
   const backfillButtonLabel = () => {
     const scope = getBackfillScope()
     const count = scope === 'selected' ? selectedRowKeys.length : total
-    return scope === 'selected' ? `补传所选远端未发现 (${count})` : `补传远端未发现 (${count})`
+    return scope === 'selected' ? `Reenviar selecionados (${count})` : `Reenviar não encontrados (${count})`
   }
 
   const uploadCpaButtonLabel = () => {
     const scope = getUploadCpaScope()
     const count = scope === 'selected' ? selectedRowKeys.length : total
-    return scope === 'selected' ? `导入所选 CPA (${count})` : `导入筛选 CPA (${count})`
+    return scope === 'selected' ? `Importar CPA selecionados (${count})` : `Importar CPA filtrados (${count})`
   }
 
   const isChatgptPlatform = currentPlatform === 'chatgpt'
@@ -1127,7 +1127,7 @@ export default function Accounts() {
 
   const columns: any[] = [
     {
-      title: '邮箱',
+      title: 'Email',
       dataIndex: 'email',
       key: 'email',
       width: 260,
@@ -1142,14 +1142,14 @@ export default function Accounts() {
             </Text>
             <Button type="text" size="small" icon={<CopyOutlined />} onClick={() => copyText(text)} />
           </div>
-          <Text type="secondary" style={secondaryTextStyle} ellipsis={{ tooltip: record.user_id || `账号 #${record.id}` }}>
-            {record.user_id ? `UID: ${record.user_id}` : `账号 #${record.id}`}
+          <Text type="secondary" style={secondaryTextStyle} ellipsis={{ tooltip: record.user_id || `Conta #${record.id}` }}>
+            {record.user_id ? `UID: ${record.user_id}` : `Conta #${record.id}`}
           </Text>
         </div>
       ),
     },
     {
-      title: '密码',
+      title: 'Senha',
       dataIndex: 'password',
       key: 'password',
       width: 150,
@@ -1180,7 +1180,7 @@ export default function Accounts() {
       },
     },
     {
-      title: '状态',
+      title: 'Status',
       dataIndex: 'status',
       key: 'status',
       width: 110,
@@ -1191,7 +1191,7 @@ export default function Accounts() {
   if (isChatgptPlatform) {
     columns.push(
       {
-        title: '本地状态',
+        title: 'Estado Local',
         key: 'chatgpt_local_state',
         width: 320,
         render: (_: any, record: any) => {
@@ -1260,14 +1260,14 @@ export default function Accounts() {
 
     columns.push(
       {
-        title: '地区',
+        title: 'Região',
         dataIndex: 'region',
         key: 'region',
         width: 100,
         render: (text: string) => text || '-',
       },
       {
-        title: '试用链接',
+        title: 'Link de Trial',
         dataIndex: 'cashier_url',
         key: 'cashier_url',
         width: 120,
@@ -1286,7 +1286,7 @@ export default function Accounts() {
 
   columns.push(
     {
-      title: '注册时间',
+      title: 'Data de Cadastro',
       dataIndex: 'created_at',
       key: 'created_at',
       width: 132,
@@ -1301,24 +1301,24 @@ export default function Accounts() {
       },
     },
     {
-      title: '操作',
+      title: 'Ações',
       key: 'action',
       width: 150,
       fixed: isChatgptPlatform ? 'right' : undefined,
       render: (_: any, record: any) => (
         <Space size={4} wrap>
           <Button type="link" size="small" onClick={() => { setCurrentAccount(record); setDetailModalOpen(true); }}>
-            详情
+            Detalhes
           </Button>
           <Popconfirm
-            title="确认删除该账号吗？"
+            title="Confirmar exclusão desta conta?"
             onConfirm={() => handleDelete(record.id)}
-            okText="删除"
-            cancelText="取消"
+            okText="Excluir"
+            cancelText="Cancelar"
             okButtonProps={{ danger: true }}
           >
             <Button type="link" size="small" danger>
-              删除
+              Excluir
             </Button>
           </Popconfirm>
           <ActionMenu acc={record} onRefresh={load} actions={platformActions} />
@@ -1332,16 +1332,16 @@ export default function Accounts() {
       key: `probe:${getStatusSyncScope()}`,
       label:
         getStatusSyncScope() === 'selected'
-          ? `同步所选本地状态 (${selectedRowKeys.length})`
-          : `同步当前筛选本地状态 (${total})`,
+          ? `Sincronizar estado local selecionado (${selectedRowKeys.length})`
+          : `Sincronizar estado local filtrado (${total})`,
       disabled: getStatusSyncScope() === 'selected' ? selectedRowKeys.length === 0 : total === 0,
     },
     {
       key: `remote:${getStatusSyncScope()}`,
       label:
         getStatusSyncScope() === 'selected'
-          ? `同步所选 CLIProxyAPI 状态 (${selectedRowKeys.length})`
-          : `同步当前筛选 CLIProxyAPI 状态 (${total})`,
+          ? `Sincronizar CLIProxyAPI selecionado (${selectedRowKeys.length})`
+          : `Sincronizar CLIProxyAPI filtrado (${total})`,
       disabled: getStatusSyncScope() === 'selected' ? selectedRowKeys.length === 0 : total === 0,
     },
   ]
@@ -1351,39 +1351,39 @@ export default function Accounts() {
       <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
         <Space>
           <Input.Search
-            placeholder="搜索邮箱..."
+            placeholder="Pesquisar email..."
             allowClear
             onSearch={(v) => { setPage(1); setSearch(v) }}
             style={{ width: 200 }}
           />
           <Select
-            placeholder="状态筛选"
+            placeholder="Filtrar Status"
             allowClear
-            style={{ width: 120 }}
+            style={{ width: 130 }}
             onChange={(v) => { setPage(1); setFilterStatus(v) }}
             options={[
-              { value: 'registered', label: '已注册' },
-              { value: 'trial', label: '试用中' },
-              { value: 'subscribed', label: '已订阅' },
-              { value: 'expired', label: '已过期' },
-              { value: 'invalid', label: '已失效' },
+              { value: 'registered', label: 'Registrado' },
+              { value: 'trial', label: 'Em Teste' },
+              { value: 'subscribed', label: 'Assinado' },
+              { value: 'expired', label: 'Expirado' },
+              { value: 'invalid', label: 'Inválido' },
             ]}
           />
           <DatePicker
             showTime
             allowClear
-            placeholder="开始时间"
+            placeholder="Data de Início"
             onChange={(value) => { setPage(1); setCreatedAtStart(value ? value.toISOString() : '') }}
           />
           <DatePicker
             showTime
             allowClear
-            placeholder="结束时间"
+            placeholder="Data de Fim"
             onChange={(value) => { setPage(1); setCreatedAtEnd(value ? value.toISOString() : '') }}
           />
-          <Text type="secondary">{total} 个账号</Text>
+          <Text type="secondary">{total} contas</Text>
           {selectedRowKeys.length > 0 && (
-            <Text type="success">已选 {selectedRowKeys.length} 个</Text>
+            <Text type="success">{selectedRowKeys.length} selecionados</Text>
           )}
         </Space>
         <Space>
@@ -1403,7 +1403,7 @@ export default function Accounts() {
                 loading={statusSyncLoading !== ''}
                 disabled={total === 0}
               >
-                状态同步
+                Sincronizar Status
               </Button>
             </Dropdown>
           )}
@@ -1411,12 +1411,12 @@ export default function Accounts() {
             <Popconfirm
               title={
                 getBackfillScope() === 'selected'
-                  ? `确认补传所选 ${selectedRowKeys.length} 个账号中远端未发现的 auth-file？`
-                  : '确认补传当前筛选范围内远端未发现且本地状态有效的账号？'
+                  ? `Confirmar reenvio de auth-file para ${selectedRowKeys.length} contas selecionadas?`
+                  : 'Confirmar reenvio das contas com estado válido não encontradas remotamente?'
               }
               onConfirm={() => handleCpaBackfill(getBackfillScope())}
-              okText="确认"
-              cancelText="取消"
+              okText="Confirmar"
+              cancelText="Cancelar"
             >
               <Button
                 loading={cpaSyncLoading === 'pending' || cpaSyncLoading === 'selected'}
@@ -1431,12 +1431,12 @@ export default function Accounts() {
             <Popconfirm
               title={
                 getUploadCpaScope() === 'selected'
-                  ? `确认导入所选 ${selectedRowKeys.length} 个账号到 CPA？`
-                  : `确认导入当前筛选范围内 ${total} 个账号到 CPA？`
+                  ? `Confirmar importação de ${selectedRowKeys.length} contas selecionadas ao CPA?`
+                  : `Confirmar importação de ${total} contas filtradas ao CPA?`
               }
               onConfirm={() => handleBatchUploadCpa(getUploadCpaScope())}
-              okText="确认"
-              cancelText="取消"
+              okText="Confirmar"
+              cancelText="Cancelar"
             >
               <Button
                 loading={cpaUploadLoading === 'selected' || cpaUploadLoading === 'all'}
@@ -1449,19 +1449,19 @@ export default function Accounts() {
           )}
           {selectedRowKeys.length > 0 && (
             <Popconfirm
-              title={`确认删除选中的 ${selectedRowKeys.length} 个账号？`}
+              title={`Confirmar exclusão das ${selectedRowKeys.length} contas selecionadas?`}
               onConfirm={handleBatchDelete}
-              okText="删除"
-              cancelText="取消"
+              okText="Excluir"
+              cancelText="Cancelar"
               okButtonProps={{ danger: true }}
             >
-              <Button danger icon={<DeleteOutlined />}>删除 {selectedRowKeys.length} 个</Button>
+              <Button danger icon={<DeleteOutlined />}>Excluir {selectedRowKeys.length}</Button>
             </Popconfirm>
           )}
-          <Button icon={<UploadOutlined />} onClick={() => setImportModalOpen(true)}>导入</Button>
-          <Button icon={<DownloadOutlined />} onClick={exportCsv} disabled={accounts.length === 0}>导出</Button>
-          <Button icon={<PlusOutlined />} onClick={() => setAddModalOpen(true)}>新增</Button>
-          <Button type="primary" icon={<PlusOutlined />} onClick={() => setRegisterModalOpen(true)}>注册</Button>
+          <Button icon={<UploadOutlined />} onClick={() => setImportModalOpen(true)}>Importar</Button>
+          <Button icon={<DownloadOutlined />} onClick={exportCsv} disabled={accounts.length === 0}>Exportar</Button>
+          <Button icon={<PlusOutlined />} onClick={() => setAddModalOpen(true)}>Adicionar</Button>
+          <Button type="primary" icon={<PlusOutlined />} onClick={() => setRegisterModalOpen(true)}>Registrar</Button>
           <Button icon={<ReloadOutlined spin={loading} />} onClick={load} />
         </Space>
       </div>
@@ -1487,7 +1487,7 @@ export default function Accounts() {
       />
 
       <Modal
-        title={`注册 ${currentPlatform}`}
+        title={`Registrar em ${currentPlatform}`}
         open={registerModalOpen}
         onCancel={() => { setRegisterModalOpen(false); setTaskId(null); registerForm.resetFields(); }}
         footer={null}
@@ -1496,13 +1496,13 @@ export default function Accounts() {
       >
         {!taskId ? (
           <Form form={registerForm} layout="vertical" onFinish={handleRegister}>
-            <Form.Item name="count" label="注册数量" initialValue={1} rules={[{ required: true }]}>
+            <Form.Item name="count" label="Quantidade" initialValue={1} rules={[{ required: true }]}>
               <Input type="number" min={1} />
             </Form.Item>
-            <Form.Item name="concurrency" label="并发数" initialValue={1} rules={[{ required: true }]}>
+            <Form.Item name="concurrency" label="Concorrência" initialValue={1} rules={[{ required: true }]}>
               <Input type="number" min={1} />
             </Form.Item>
-            <Form.Item name="register_delay_seconds" label="每个注册延迟(秒)" initialValue={0}>
+            <Form.Item name="register_delay_seconds" label="Atraso por registro (s)" initialValue={0}>
               <InputNumber min={0} precision={1} step={0.5} style={{ width: '100%' }} placeholder="0 = 不延迟" />
             </Form.Item>
             {currentPlatform === 'chatgpt' && (
@@ -1515,7 +1515,7 @@ export default function Accounts() {
             )}
             <Form.Item>
               <Button type="primary" htmlType="submit" block loading={registerLoading}>
-                开始注册
+                Iniciar Registro
               </Button>
             </Form.Item>
           </Form>
@@ -1525,33 +1525,33 @@ export default function Accounts() {
       </Modal>
 
       <Modal
-        title="手动新增账号"
+        title="Adicionar Conta Manualmente"
         open={addModalOpen}
         onCancel={() => { setAddModalOpen(false); addForm.resetFields(); }}
         onOk={handleAdd}
-        okText="确定"
-        cancelText="取消"
+        okText="OK"
+        cancelText="Cancelar"
         maskClosable={false}
       >
         <Form form={addForm} layout="vertical">
-          <Form.Item name="email" label="邮箱" rules={[{ required: true }]}>
+          <Form.Item name="email" label="Email" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
-          <Form.Item name="password" label="密码" rules={[{ required: true }]}>
+          <Form.Item name="password" label="Senha" rules={[{ required: true }]}>
             <Input.Password />
           </Form.Item>
           <Form.Item name="token" label="Token">
             <Input />
           </Form.Item>
-          <Form.Item name="cashier_url" label="试用链接">
+          <Form.Item name="cashier_url" label="Link de Trial">
             <Input />
           </Form.Item>
-          <Form.Item name="status" label="状态" initialValue="registered">
+          <Form.Item name="status" label="Status" initialValue="registered">
             <Select
               options={[
-                { value: 'registered', label: '已注册' },
-                { value: 'trial', label: '试用中' },
-                { value: 'subscribed', label: '已订阅' },
+                { value: 'registered', label: 'Registrado' },
+                { value: 'trial', label: 'Em Teste' },
+                { value: 'subscribed', label: 'Assinado' },
               ]}
             />
           </Form.Item>
@@ -1559,17 +1559,17 @@ export default function Accounts() {
       </Modal>
 
       <Modal
-        title="批量导入"
+        title="Importação em Lote"
         open={importModalOpen}
         onCancel={() => { setImportModalOpen(false); setImportText(''); }}
         onOk={handleImport}
-        okText="确定"
-        cancelText="取消"
+        okText="OK"
+        cancelText="Cancelar"
         confirmLoading={importLoading}
         maskClosable={false}
       >
         <p style={{ marginBottom: 8, fontSize: 12, color: '#7a8ba3' }}>
-          每行格式: <code style={{ background: 'rgba(255,255,255,0.1)', padding: '2px 4px', borderRadius: 4 }}>email password [cashier_url]</code>
+          Formato por linha: <code style={{ background: 'rgba(255,255,255,0.1)', padding: '2px 4px', borderRadius: 4 }}>email password [cashier_url]</code>
         </p>
         <Input.TextArea
           value={importText}
@@ -1580,12 +1580,12 @@ export default function Accounts() {
       </Modal>
 
       <Modal
-        title="账号详情"
+        title="Detalhes da Conta"
         open={detailModalOpen}
         onCancel={() => setDetailModalOpen(false)}
         onOk={handleDetailSave}
-        okText="保存"
-        cancelText="取消"
+        okText="Salvar"
+        cancelText="Cancelar"
         maskClosable={false}
         width={760}
         styles={{ body: { maxHeight: '72vh', overflowY: 'auto' } }}
@@ -1593,14 +1593,14 @@ export default function Accounts() {
         {currentAccount && (
           <>
             <Form form={detailForm} layout="vertical" initialValues={currentAccount}>
-              <Form.Item name="status" label="状态">
+              <Form.Item name="status" label="Status">
                 <Select
                   options={[
-                    { value: 'registered', label: '已注册' },
-                    { value: 'trial', label: '试用中' },
-                    { value: 'subscribed', label: '已订阅' },
-                    { value: 'expired', label: '已过期' },
-                    { value: 'invalid', label: '已失效' },
+                    { value: 'registered', label: 'Registrado' },
+                    { value: 'trial', label: 'Em Teste' },
+                    { value: 'subscribed', label: 'Assinado' },
+                    { value: 'expired', label: 'Expirado' },
+                    { value: 'invalid', label: 'Inválido' },
                   ]}
                 />
               </Form.Item>
@@ -1627,7 +1627,7 @@ export default function Accounts() {
                   >
                     <Text
                       style={{ fontFamily: 'monospace', fontSize: 11, wordBreak: 'break-all', flex: 1, userSelect: 'text' }}
-                      copyable={{ text: rt, tooltips: ['复制 RT', '已复制'] }}
+                      copyable={{ text: rt, tooltips: ['Copiar RT', 'Copiado'] }}
                     >
                       {rt}
                     </Text>
@@ -1636,26 +1636,26 @@ export default function Accounts() {
               )
             })()}
             {currentPlatform === 'kiro' && currentAccount?.extra ? (
-              <DetailSection title="Kiro 客户端信息">
+              <DetailSection title="Informações do Cliente Kiro">
                 <SummaryField label="Client ID" value={currentAccount.extra?.clientId} code />
                 <SummaryField label="Client Secret" value={currentAccount.extra?.clientSecret} code />
               </DetailSection>
             ) : null}
             {currentPlatform === 'chatgpt' ? (
-              <DetailSection title="本地真实状态">
+              <DetailSection title=”Estado Real Local”>
                 {currentAccount.chatgptLocal && Object.keys(currentAccount.chatgptLocal).length > 0 ? (
                   <LocalProbeSummary probe={currentAccount.chatgptLocal} />
                 ) : (
-                  <Text type="secondary">尚未探测。可在操作菜单中点击“探测本地状态”。</Text>
+                  <Text type=”secondary”>Ainda não sondado. Clique em “Sondar estado local” no menu de ações.</Text>
                 )}
               </DetailSection>
             ) : null}
             {currentPlatform === 'chatgpt' ? (
-              <DetailSection title="CLIProxyAPI 状态">
+              <DetailSection title=”Estado CLIProxyAPI”>
                 {currentAccount.cliproxySync && Object.keys(currentAccount.cliproxySync).length > 0 ? (
                   <CliproxySyncSummary sync={currentAccount.cliproxySync} />
                 ) : (
-                  <Text type="secondary">尚未同步。可在操作菜单中点击“同步 CLIProxyAPI 状态”。</Text>
+                  <Text type=”secondary”>Ainda não sincronizado. Clique em “Sincronizar CLIProxyAPI” no menu de ações.</Text>
                 )}
               </DetailSection>
             ) : null}

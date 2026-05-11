@@ -13,7 +13,7 @@ import {
   PlayCircleOutlined,
   ApiOutlined,
 } from '@ant-design/icons'
-import zhCN from 'antd/locale/zh_CN'
+import ptBR from 'antd/locale/pt_BR'
 import Dashboard from '@/pages/Dashboard'
 import Accounts from '@/pages/Accounts'
 import RegisterTaskPage from '@/pages/RegisterTaskPage'
@@ -107,17 +107,17 @@ function AppContent() {
     {
       key: '/',
       icon: <DashboardOutlined />,
-      label: '仪表盘',
+      label: 'Painel',
     },
     {
       key: '/running-tasks',
       icon: <PlayCircleOutlined />,
-      label: '任务运行',
+      label: 'Tarefas Ativas',
     },
     {
       key: '/accounts',
       icon: <UserOutlined />,
-      label: '平台管理',
+      label: 'Plataformas',
       children: [
         ...platforms.map(p => ({
           key: `/accounts/${p.key}`,
@@ -128,17 +128,17 @@ function AppContent() {
     {
       key: '/history',
       icon: <HistoryOutlined />,
-      label: '任务历史',
+      label: 'Histórico',
     },
     {
       key: '/proxies',
       icon: <GlobalOutlined />,
-      label: '代理管理',
+      label: 'Proxies',
     },
     {
       key: '/settings',
       icon: <SettingOutlined />,
-      label: '全局配置',
+      label: 'Configurações',
     },
     {
       key: '/gateway',
@@ -148,7 +148,7 @@ function AppContent() {
   ]
 
   return (
-    <ConfigProvider theme={currentTheme} locale={zhCN}>
+    <ConfigProvider theme={currentTheme} locale={ptBR}>
       <AntdApp>
       <Layout style={{ minHeight: '100vh' }}>
         <Sider
@@ -217,7 +217,7 @@ function AppContent() {
                 justifyContent: collapsed ? 'center' : 'space-between',
               }}
             >
-              {!collapsed && (isLight ? '亮色模式' : '暗色模式')}
+              {!collapsed && (isLight ? 'Modo Claro' : 'Modo Escuro')}
             </Button>
             {hasPassword && (
               <Button
@@ -231,7 +231,7 @@ function AppContent() {
                   justifyContent: collapsed ? 'center' : 'space-between',
                 }}
               >
-                {!collapsed && '退出登录'}
+                {!collapsed && 'Sair'}
               </Button>
             )}
           </div>
