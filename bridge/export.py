@@ -88,6 +88,10 @@ def sync(accounts: list[dict]) -> int:
         cred: dict = {"refreshToken": refresh_token}
         if extra.get("accessToken"):
             cred["accessToken"] = extra["accessToken"]
+        if extra.get("clientId"):
+            cred["clientId"] = extra["clientId"]
+        if extra.get("clientSecret"):
+            cred["clientSecret"] = extra["clientSecret"]
 
         fpath.write_text(json.dumps(cred, indent=2))
 
