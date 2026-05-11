@@ -33,7 +33,7 @@ CREDENTIALS_DIR = Path(os.environ.get("CREDENTIALS_DIR", "/shared/credentials"))
 SYNC_INTERVAL   = int(os.environ.get("SYNC_INTERVAL", "300"))
 ACCOUNTS_FILE   = CREDENTIALS_DIR / "accounts.json"
 
-VALID_STATUSES = {"active", "valid", "success", "ok", "verified", ""}
+VALID_STATUSES = {"active", "valid", "success", "ok", "verified", "", "registrado", "registered", "cadastrado", "completed"}
 
 
 def _headers() -> dict:
@@ -76,7 +76,7 @@ def sync(accounts: list[dict]) -> int:
             continue
 
         extra = _parse_extra(acc.get("extra_json"))
-        refresh_token = extra.get("refreshToken") or acc.get("token", "")
+        refresh_token = extra.get("refreshToken") or extra.get("accessToken") or acc.get("token", "")
         if not refresh_token:
             continue
 
