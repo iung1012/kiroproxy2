@@ -60,6 +60,12 @@ services:
         condition: service_healthy
     networks:
       - kiro-net
+    healthcheck:
+      test: ["CMD", "python", "-c", "import os,sys; sys.exit(0 if os.path.exists('/shared/credentials/accounts.json') else 1)"]
+      interval: 10s
+      timeout: 5s
+      start_period: 120s
+      retries: 30
 
   # ── 3. kiro-gateway ──────────────────────────────────────────────────────────
   #    Proxy de API compatível com OpenAI/Anthropic usando contas Kiro
@@ -89,7 +95,8 @@ services:
     volumes:
       - credentials:/shared/credentials:ro
     depends_on:
-      - bridge
+      bridge:
+        condition: service_healthy
     networks:
       - kiro-net
     healthcheck:
