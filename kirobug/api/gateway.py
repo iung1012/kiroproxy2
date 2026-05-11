@@ -12,6 +12,7 @@ from fastapi import APIRouter
 router = APIRouter(prefix="/gateway", tags=["gateway"])
 
 GATEWAY_URL = os.getenv("GATEWAY_URL", "http://kiro-gateway:8000")
+GATEWAY_API_KEY = os.getenv("PROXY_API_KEY", "")
 ACCOUNTS_FILE = Path(os.getenv("GATEWAY_ACCOUNTS_FILE", "/shared/credentials/accounts.json"))
 
 
@@ -36,13 +37,18 @@ async def gateway_status():
     except Exception:
         online = False
 
-    try:
-        resp = httpx.get(f"{GATEWAY_URL}/v1/models", timeout=5)
-        if resp.status_code == 200:
-            data = resp.json()
-            models = [m["id"] for m in data.get("data", [])]
-    except Exception:
-        pass
+    if GATEWAY_API_KEY:
+        try:
+            resp = httpx.get(
+                f"{GATEWAY_URL}/v1/models",
+                headers={"Authorization": f"Bearer {GATEWAY_API_KEY}"},
+                timeout=5,
+            )
+            if resp.status_code == 200:
+                data = resp.json()
+                models = [m["id"] for m in data.get("data", [])]
+        except Exception:
+            pass
 
     accounts = _read_accounts()
 

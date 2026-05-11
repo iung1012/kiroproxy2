@@ -575,10 +575,16 @@ app.add_middleware(DebugLoggerMiddleware)
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse as StarletteJSONResponse
 
+_SETUP_BYPASS_PATHS = {"/", "/health"}
+
 class SetupRequiredMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
         setup_required = getattr(request.app.state, "setup_required", False)
-        if setup_required and not request.url.path.startswith("/ui"):
+        if (
+            setup_required
+            and request.url.path not in _SETUP_BYPASS_PATHS
+            and not request.url.path.startswith("/ui")
+        ):
             return StarletteJSONResponse(
                 {"error": "Gateway not configured. Visit /ui to complete setup."},
                 status_code=503,

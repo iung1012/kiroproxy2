@@ -23,6 +23,7 @@ services:
       LOCAL_SOLVER_URL: http://127.0.0.1:8889
       SOLVER_BROWSER_TYPE: ${SOLVER_BROWSER_TYPE:-camoufox}
       PLAYWRIGHT_HEADLESS: "1"
+      PROXY_API_KEY: ${PROXY_API_KEY}
     expose:
       - "3000"
     volumes:
