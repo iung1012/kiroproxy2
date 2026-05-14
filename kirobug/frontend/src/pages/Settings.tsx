@@ -24,19 +24,19 @@ function resolveEffectiveMailProvider(mailProvider: string, mailImportSource: st
 
 const SELECT_FIELDS: Record<string, { label: string; value: string }[]> = {
   mail_provider: [
-    { label: 'LuckMail（订单接码 / 已购邮箱）', value: 'luckmail' },
-    { label: '邮箱导入', value: 'mail_import' },
-    { label: 'Laoudo（固定邮箱）', value: 'laoudo' },
-    { label: 'TempMail.lol（自动生成）', value: 'tempmail_lol' },
-    { label: 'SkyMail（CloudMail 接口）', value: 'skymail' },
-    { label: 'CloudMail（genToken 口令模式）', value: 'cloudmail' },
-    { label: 'DuckMail（自动生成）', value: 'duckmail' },
+    { label: 'LuckMail (pedido de código / e-mail comprado)', value: 'luckmail' },
+    { label: 'Importar E-mail', value: 'mail_import' },
+    { label: 'Laoudo (e-mail fixo)', value: 'laoudo' },
+    { label: 'TempMail.lol (gerado automaticamente)', value: 'tempmail_lol' },
+    { label: 'SkyMail (interface CloudMail)', value: 'skymail' },
+    { label: 'CloudMail (modo genToken)', value: 'cloudmail' },
+    { label: 'DuckMail (gerado automaticamente)', value: 'duckmail' },
     { label: 'MoeMail (sall.cc)', value: 'moemail' },
     { label: 'YYDS Mail / MaliAPI', value: 'maliapi' },
     { label: 'GPTMail', value: 'gptmail' },
     { label: 'OpenTrashMail', value: 'opentrashmail' },
-    { label: 'Freemail（自建 CF Worker）', value: 'freemail' },
-    { label: 'CF Worker（自建域名）', value: 'cfworker' },
+    { label: 'Freemail (CF Worker próprio)', value: 'freemail' },
+    { label: 'CF Worker (domínio próprio)', value: 'cfworker' },
   ],
   maliapi_auto_domain_strategy: [
     { label: 'balanced', value: 'balanced' },
@@ -44,88 +44,88 @@ const SELECT_FIELDS: Record<string, { label: string; value: string }[]> = {
     { label: 'prefer_public', value: 'prefer_public' },
   ],
   default_executor: [
-    { label: 'API 协议（无浏览器）', value: 'protocol' },
-    { label: '无头浏览器', value: 'headless' },
-    { label: '有头浏览器', value: 'headed' },
+    { label: 'Protocolo API (sem navegador)', value: 'protocol' },
+    { label: 'Navegador sem interface (headless)', value: 'headless' },
+    { label: 'Navegador com interface (headed)', value: 'headed' },
   ],
   default_captcha_solver: [
     { label: 'YesCaptcha', value: 'yescaptcha' },
-    { label: '本地 Solver (Camoufox)', value: 'local_solver' },
-    { label: '手动', value: 'manual' },
+    { label: 'Solver Local (Camoufox)', value: 'local_solver' },
+    { label: 'Manual', value: 'manual' },
   ],
   outlook_backend: [
-    { label: 'Graph（默认）', value: 'graph' },
+    { label: 'Graph (padrão)', value: 'graph' },
     { label: 'IMAP', value: 'imap' },
   ],
   luckmail_email_type: [
-    { label: '自动 / 留空', value: '' },
-    { label: '微软邮箱 - Graph', value: 'ms_graph' },
-    { label: '微软邮箱 - IMAP', value: 'ms_imap' },
-    { label: '自建邮箱', value: 'self_built' },
+    { label: 'Automático / Vazio', value: '' },
+    { label: 'Microsoft - Graph', value: 'ms_graph' },
+    { label: 'Microsoft - IMAP', value: 'ms_imap' },
+    { label: 'E-mail próprio', value: 'self_built' },
   ],
   cpa_cleanup_enabled: [
-    { label: '关闭', value: '0' },
-    { label: '开启', value: '1' },
+    { label: 'Desativado', value: '0' },
+    { label: 'Ativado', value: '1' },
   ],
   codex_proxy_upload_type: [
-    { label: 'AT（Access Token，推荐）', value: 'at' },
-    { label: 'RT（Refresh Token）', value: 'rt' },
+    { label: 'AT (Access Token, recomendado)', value: 'at' },
+    { label: 'RT (Refresh Token)', value: 'rt' },
   ],
   external_apps_update_mode: [
-    { label: 'latest semver tag（推荐）', value: 'tag' },
-    { label: '分支 HEAD', value: 'branch' },
+    { label: 'latest semver tag (recomendado)', value: 'tag' },
+    { label: 'Branch HEAD', value: 'branch' },
   ],
 }
 
 const TAB_ITEMS = [
   {
     key: 'register',
-    label: '注册设置',
+    label: 'Registro',
     icon: <ApiOutlined />,
     sections: [
       {
-        title: '默认注册方式',
-        desc: '控制注册任务如何执行',
-        fields: [{ key: 'default_executor', label: '执行器类型', type: 'select' }],
+        title: 'Método de Registro Padrão',
+        desc: 'Controla como as tarefas de registro são executadas',
+        fields: [{ key: 'default_executor', label: 'Tipo de Executor', type: 'select' }],
       },
     ],
   },
   {
     key: 'mailbox',
-    label: '邮箱服务',
+    label: 'E-mail',
     icon: <MailOutlined />,
     sections: [
       {
-        title: '默认邮箱服务',
-        desc: '选择注册时使用的邮箱类型',
+        title: 'Serviço de E-mail Padrão',
+        desc: 'Selecione o tipo de e-mail usado no registro',
         fields: [
-          { key: 'mail_provider', label: '邮箱服务', type: 'select' },
-          { key: 'mailbox_otp_timeout_seconds', label: '邮箱验证码等待秒数', placeholder: '例如 60 / 90 / 120' },
+          { key: 'mail_provider', label: 'Serviço de E-mail', type: 'select' },
+          { key: 'mailbox_otp_timeout_seconds', label: 'Tempo de espera pelo código (segundos)', placeholder: 'Ex: 60 / 90 / 120' },
         ],
       },
       {
         title: 'Laoudo',
-        desc: '固定邮箱，手动配置',
+        desc: 'E-mail fixo, configuração manual',
         fields: [
-          { key: 'laoudo_email', label: '邮箱地址', placeholder: 'xxx@laoudo.com' },
+          { key: 'laoudo_email', label: 'Endereço de e-mail', placeholder: 'xxx@laoudo.com' },
           { key: 'laoudo_account_id', label: 'Account ID', placeholder: '563' },
           { key: 'laoudo_auth', label: 'JWT Token', placeholder: 'eyJ...', secret: true },
         ],
       },
       {
         title: 'Freemail',
-        desc: '基于 Cloudflare Worker 的自建邮箱，支持管理员令牌或账号密码认证',
+        desc: 'E-mail próprio baseado em Cloudflare Worker, suporta token de admin ou usuário/senha',
         fields: [
           { key: 'freemail_api_url', label: 'API URL', placeholder: 'https://mail.example.com' },
-          { key: 'freemail_admin_token', label: '管理员令牌', secret: true },
-          { key: 'freemail_username', label: '用户名（可选）' },
-          { key: 'freemail_password', label: '密码（可选）', secret: true },
-          { key: 'freemail_domain', label: '邮箱域名（可选）', placeholder: 'example.com' },
+          { key: 'freemail_admin_token', label: 'Token de Admin', secret: true },
+          { key: 'freemail_username', label: 'Usuário (opcional)' },
+          { key: 'freemail_password', label: 'Senha (opcional)', secret: true },
+          { key: 'freemail_domain', label: 'Domínio do e-mail (opcional)', placeholder: 'example.com' },
         ],
       },
       {
         title: 'MoeMail',
-        desc: '自动注册账号并生成临时邮箱',
+        desc: 'Registra conta automaticamente e gera e-mail temporário',
         fields: [
           { key: 'moemail_api_url', label: 'API URL', placeholder: 'https://sall.cc' },
           { key: 'moemail_api_key', label: 'API Key', secret: true },
@@ -133,123 +133,123 @@ const TAB_ITEMS = [
       },
       {
         title: 'SkyMail',
-        desc: 'CloudMail 兼容接口（addUser / emailList）',
+        desc: 'Interface compatível com CloudMail (addUser / emailList)',
         fields: [
           { key: 'skymail_api_base', label: 'API Base', placeholder: 'https://api.skymail.ink' },
           { key: 'skymail_token', label: 'Authorization Token', secret: true },
-          { key: 'skymail_domain', label: '邮箱域名', placeholder: 'mail.example.com' },
+          { key: 'skymail_domain', label: 'Domínio do e-mail', placeholder: 'mail.example.com' },
         ],
       },
       {
         title: 'CloudMail',
-        desc: 'CloudMail 口令模式（genToken + emailList）',
+        desc: 'Modo genToken do CloudMail (genToken + emailList)',
         fields: [
           { key: 'cloudmail_api_base', label: 'API Base', placeholder: 'https://cloudmail.example.com' },
-          { key: 'cloudmail_admin_email', label: '管理员邮箱（可选）', placeholder: 'admin@example.com' },
-          { key: 'cloudmail_admin_password', label: '管理员密码', secret: true },
-          { key: 'cloudmail_domain', label: '邮箱域名（可选）', placeholder: 'mail.example.com,mail2.example.com' },
-          { key: 'cloudmail_subdomain', label: '子域名（可选）', placeholder: 'pool-a' },
-          { key: 'cloudmail_timeout', label: '请求超时秒数', placeholder: '30' },
+          { key: 'cloudmail_admin_email', label: 'E-mail do admin (opcional)', placeholder: 'admin@example.com' },
+          { key: 'cloudmail_admin_password', label: 'Senha do admin', secret: true },
+          { key: 'cloudmail_domain', label: 'Domínio (opcional)', placeholder: 'mail.example.com,mail2.example.com' },
+          { key: 'cloudmail_subdomain', label: 'Subdomínio (opcional)', placeholder: 'pool-a' },
+          { key: 'cloudmail_timeout', label: 'Timeout da requisição (segundos)', placeholder: '30' },
         ],
       },
       {
         title: 'YYDS Mail / MaliAPI',
-        desc: '基于 API Key 创建临时邮箱并轮询收件箱消息',
+        desc: 'Cria e-mail temporário via API Key e faz polling da caixa de entrada',
         fields: [
           { key: 'maliapi_base_url', label: 'API URL', placeholder: 'https://maliapi.215.im/v1' },
           { key: 'maliapi_api_key', label: 'API Key', secret: true },
-          { key: 'maliapi_domain', label: '邮箱域名（可选）', placeholder: 'example.com' },
-          { key: 'maliapi_auto_domain_strategy', label: '自动域名策略', type: 'select' },
+          { key: 'maliapi_domain', label: 'Domínio (opcional)', placeholder: 'example.com' },
+          { key: 'maliapi_auto_domain_strategy', label: 'Estratégia de domínio automático', type: 'select' },
         ],
       },
       {
-        title: '邮箱导入（微软 / Outlook / Hotmail）',
-        desc: '使用本地导入的微软账号池，运行时支持 Graph / IMAP 轮询（默认 Graph）',
+        title: 'Importar E-mail (Microsoft / Outlook / Hotmail)',
+        desc: 'Usa pool de contas Microsoft importadas localmente, suporta Graph / IMAP (padrão Graph)',
         fields: [
-          { key: 'outlook_backend', label: '微软收信方式', type: 'select' },
+          { key: 'outlook_backend', label: 'Método de recebimento Microsoft', type: 'select' },
         ],
       },
       {
-        title: '邮箱导入（AppleMail / 小苹果）',
-        desc: '读取本地邮箱池文件，通过 refresh_token + client_id 调用小苹果取件接口；支持在本页直接导入 JSON',
+        title: 'Importar E-mail (AppleMail)',
+        desc: 'Lê arquivo de pool de e-mails local via refresh_token + client_id; suporta importação de JSON diretamente nesta página',
         fields: [
           { key: 'applemail_base_url', label: 'API URL', placeholder: 'https://www.appleemail.top' },
-          { key: 'applemail_pool_dir', label: '邮箱池目录', placeholder: 'mail' },
-          { key: 'applemail_pool_file', label: '当前邮箱池文件（可选）', placeholder: '留空则自动读取目录中最新文件' },
-          { key: 'applemail_mailboxes', label: '轮询文件夹', placeholder: 'INBOX,Junk' },
+          { key: 'applemail_pool_dir', label: 'Diretório do pool', placeholder: 'mail' },
+          { key: 'applemail_pool_file', label: 'Arquivo do pool atual (opcional)', placeholder: 'Vazio = lê o arquivo mais recente do diretório' },
+          { key: 'applemail_mailboxes', label: 'Pastas para polling', placeholder: 'INBOX,Junk' },
         ],
       },
       {
         title: 'GPTMail',
-        desc: '基于 GPTMail API 生成临时邮箱并轮询邮件；若已知本站可用域名，也可本地拼装随机地址',
+        desc: 'Gera e-mail temporário via GPTMail API e faz polling; suporta domínios conhecidos para gerar endereços aleatórios localmente',
         fields: [
           { key: 'gptmail_base_url', label: 'API URL', placeholder: 'https://mail.chatgpt.org.uk' },
           { key: 'gptmail_api_key', label: 'API Key', secret: true, placeholder: 'gpt-test' },
-          { key: 'gptmail_domain', label: '邮箱域名（可选）', placeholder: 'example.com' },
+          { key: 'gptmail_domain', label: 'Domínio (opcional)', placeholder: 'example.com' },
         ],
       },
       {
         title: 'OpenTrashMail',
-        desc: '对接 opentrashmail 服务；可直接轮询 /json/<email>，也支持已知域名时本地拼装随机地址',
+        desc: 'Integra com serviço opentrashmail; faz polling via /json/<email> ou gera endereços aleatórios com domínio conhecido',
         fields: [
           { key: 'opentrashmail_api_url', label: 'API URL', placeholder: 'http://mail.example.com:8085' },
-          { key: 'opentrashmail_domain', label: '邮箱域名（可选）', placeholder: 'xiyoufm.com' },
-          { key: 'opentrashmail_password', label: '站点密码（可选）', secret: true, placeholder: '启用 PASSWORD 时填写' },
+          { key: 'opentrashmail_domain', label: 'Domínio (opcional)', placeholder: 'xiyoufm.com' },
+          { key: 'opentrashmail_password', label: 'Senha do site (opcional)', secret: true, placeholder: 'Preencher quando PASSWORD estiver ativado' },
         ],
       },
       {
         title: 'TempMail.lol',
-        desc: '自动生成邮箱，无需配置，需要代理访问（CN IP 被封）',
+        desc: 'Gera e-mail automaticamente, sem configuração, requer proxy de acesso',
         fields: [],
       },
       {
         title: 'DuckMail',
-        desc: '自动生成邮箱，随机创建账号',
+        desc: 'Gera e-mail automaticamente, cria conta aleatória',
         fields: [
           { key: 'duckmail_api_url', label: 'Web URL', placeholder: 'https://www.duckmail.sbs' },
           { key: 'duckmail_provider_url', label: 'Provider URL', placeholder: 'https://api.duckmail.sbs' },
           { key: 'duckmail_bearer', label: 'Bearer Token', placeholder: 'kevin273945', secret: true },
-          { key: 'duckmail_domain', label: '自定义域名', placeholder: '留空则从 Provider URL 推导' },
-          { key: 'duckmail_api_key', label: 'API Key（私有域名）', placeholder: 'dk_xxx（domain.duckmail.sbs 获取）', secret: true },
+          { key: 'duckmail_domain', label: 'Domínio personalizado', placeholder: 'Vazio = deduzido do Provider URL' },
+          { key: 'duckmail_api_key', label: 'API Key (domínio privado)', placeholder: 'dk_xxx (obtido em domain.duckmail.sbs)', secret: true },
         ],
       },
       {
-        title: 'CF Worker 自建邮箱',
-        desc: '基于 Cloudflare Worker 的自建临时邮箱服务',
+        title: 'CF Worker (e-mail próprio)',
+        desc: 'Serviço de e-mail temporário próprio baseado em Cloudflare Worker',
         fields: [
           { key: 'cfworker_api_url', label: 'API URL', placeholder: 'https://apimail.example.com' },
-          { key: 'cfworker_admin_token', label: '管理员 Token', secret: true },
-          { key: 'cfworker_custom_auth', label: '站点密码', secret: true },
-          { key: 'cfworker_subdomain', label: '固定子域名', placeholder: 'mail / pool-a' },
-          { key: 'email_domain_rule_enabled', label: '启用域名规则', type: 'boolean' },
-          { key: 'email_domain_level_count', label: '域名级数（N 级）', placeholder: '例如 2 / 3 / 4' },
-          { key: 'cfworker_random_subdomain', label: '随机子域名', type: 'boolean' },
-          { key: 'cfworker_random_name_subdomain', label: '随机姓名子域名', type: 'boolean' },
+          { key: 'cfworker_admin_token', label: 'Token de Admin', secret: true },
+          { key: 'cfworker_custom_auth', label: 'Senha do site', secret: true },
+          { key: 'cfworker_subdomain', label: 'Subdomínio fixo', placeholder: 'mail / pool-a' },
+          { key: 'email_domain_rule_enabled', label: 'Ativar regra de domínio', type: 'boolean' },
+          { key: 'email_domain_level_count', label: 'Nível do domínio (N níveis)', placeholder: 'Ex: 2 / 3 / 4' },
+          { key: 'cfworker_random_subdomain', label: 'Subdomínio aleatório', type: 'boolean' },
+          { key: 'cfworker_random_name_subdomain', label: 'Subdomínio com nome aleatório', type: 'boolean' },
           { key: 'cfworker_fingerprint', label: 'Fingerprint', placeholder: '6703363b...' },
         ],
       },
       {
         title: 'LuckMail',
-        desc: 'ChatGPT 走购买邮箱，其他平台继续走订单接码老逻辑',
+        desc: 'ChatGPT usa e-mail comprado, outras plataformas continuam com lógica de pedido de código',
         fields: [
-          { key: 'luckmail_base_url', label: '平台地址', placeholder: 'https://mails.luckyous.com' },
+          { key: 'luckmail_base_url', label: 'URL da plataforma', placeholder: 'https://mails.luckyous.com' },
           { key: 'luckmail_api_key', label: 'API Key', secret: true },
-          { key: 'luckmail_email_type', label: '邮箱类型（可选）', type: 'select' },
-          { key: 'luckmail_domain', label: '邮箱域名（可选）', placeholder: 'outlook.com / gmail.com' },
+          { key: 'luckmail_email_type', label: 'Tipo de e-mail (opcional)', type: 'select' },
+          { key: 'luckmail_domain', label: 'Domínio (opcional)', placeholder: 'outlook.com / gmail.com' },
         ],
       },
     ],
   },
   {
     key: 'captcha',
-    label: '验证码',
+    label: 'CAPTCHA',
     icon: <SafetyOutlined />,
     sections: [
       {
-        title: '验证码服务',
-        desc: '用于绕过注册页面的人机验证',
+        title: 'Serviço de CAPTCHA',
+        desc: 'Usado para contornar verificação humana na página de registro',
         fields: [
-          { key: 'default_captcha_solver', label: '默认服务', type: 'select' },
+          { key: 'default_captcha_solver', label: 'Serviço Padrão', type: 'select' },
           { key: 'yescaptcha_key', label: 'YesCaptcha Key', secret: true },
         ],
       },
@@ -261,38 +261,38 @@ const TAB_ITEMS = [
     icon: <ApiOutlined />,
     sections: [
       {
-        title: 'CPA 面板',
-        desc: '注册完成后自动上传到 CPA 管理平台',
+        title: 'Painel CPA',
+        desc: 'Envia automaticamente para a plataforma CPA após registro',
         fields: [
-          { key: 'cpa_enabled', label: '启用自动上传', type: 'boolean' },
+          { key: 'cpa_enabled', label: 'Ativar envio automático', type: 'boolean' },
           { key: 'cpa_api_url', label: 'API URL', placeholder: 'https://your-cpa.example.com' },
           { key: 'cpa_api_key', label: 'API Key', secret: true },
         ],
       },
       {
-        title: 'Sub2API 面板',
-        desc: '注册完成后自动上传到 Sub2API 管理后台',
+        title: 'Painel Sub2API',
+        desc: 'Envia automaticamente para o painel Sub2API após registro',
         fields: [
-          { key: 'sub2api_enabled', label: '启用自动上传', type: 'boolean' },
+          { key: 'sub2api_enabled', label: 'Ativar envio automático', type: 'boolean' },
           { key: 'sub2api_api_url', label: 'API URL', placeholder: 'https://your-sub2api.example.com' },
           { key: 'sub2api_api_key', label: 'API Key', secret: true },
-          { key: 'sub2api_group_ids', label: '分组 ID', placeholder: '多个分组用英文逗号分隔，例如 2,4,8' },
+          { key: 'sub2api_group_ids', label: 'IDs de grupo', placeholder: 'Separar múltiplos por vírgula, ex: 2,4,8' },
         ],
       },
       {
-        title: 'CPA 自动维护',
-        desc: '定时删除 status=error 的凭证，剩余数量低于阈值时自动按现有配置补注册 ChatGPT',
+        title: 'Manutenção automática CPA',
+        desc: 'Remove credenciais com status=error periodicamente e registra novos ChatGPT quando abaixo do limite',
         fields: [
-          { key: 'cpa_cleanup_enabled', label: '自动维护', type: 'select' },
-          { key: 'cpa_cleanup_interval_minutes', label: '检查间隔（分钟）', placeholder: '60' },
-          { key: 'cpa_cleanup_threshold', label: '最低凭证阈值', placeholder: '5' },
-          { key: 'cpa_cleanup_concurrency', label: '补注册并发数', placeholder: '1' },
-          { key: 'cpa_cleanup_register_delay_seconds', label: '每个注册延迟（秒）', placeholder: '0' },
+          { key: 'cpa_cleanup_enabled', label: 'Manutenção automática', type: 'select' },
+          { key: 'cpa_cleanup_interval_minutes', label: 'Intervalo de verificação (minutos)', placeholder: '60' },
+          { key: 'cpa_cleanup_threshold', label: 'Limite mínimo de credenciais', placeholder: '5' },
+          { key: 'cpa_cleanup_concurrency', label: 'Registros simultâneos', placeholder: '1' },
+          { key: 'cpa_cleanup_register_delay_seconds', label: 'Delay por registro (segundos)', placeholder: '0' },
         ],
       },
       {
         title: 'Team Manager',
-        desc: '上传到自建 Team Manager 系统',
+        desc: 'Envia para sistema Team Manager próprio',
         fields: [
           { key: 'team_manager_url', label: 'API URL', placeholder: 'https://your-tm.example.com' },
           { key: 'team_manager_key', label: 'API Key', secret: true },
@@ -300,23 +300,23 @@ const TAB_ITEMS = [
       },
       {
         title: 'CodexProxy',
-        desc: '注册完成后自动上传到 CodexProxy 管理平台',
+        desc: 'Envia automaticamente para a plataforma CodexProxy após registro',
         fields: [
           { key: 'codex_proxy_url', label: 'API URL', placeholder: 'https://your-codex-proxy.example.com' },
           { key: 'codex_proxy_key', label: 'Admin Key', secret: true },
-          { key: 'codex_proxy_upload_type', label: '上传类型' },
+          { key: 'codex_proxy_upload_type', label: 'Tipo de envio' },
         ],
       },
       {
-        title: 'SMSToMe 手机验证',
-        desc: 'ChatGPT add_phone 阶段自动取号并轮询短信验证码',
+        title: 'SMSToMe - Verificação por telefone',
+        desc: 'Obtém número e faz polling do código SMS automaticamente na fase add_phone do ChatGPT',
         fields: [
           { key: 'smstome_cookie', label: 'SMSToMe Cookie', secret: true },
-          { key: 'smstome_country_slugs', label: '国家列表', placeholder: 'united-kingdom,poland' },
-          { key: 'smstome_phone_attempts', label: '手机号尝试次数', placeholder: '3' },
-          { key: 'smstome_otp_timeout_seconds', label: '短信等待秒数', placeholder: '45' },
-          { key: 'smstome_poll_interval_seconds', label: '轮询间隔秒数', placeholder: '5' },
-          { key: 'smstome_sync_max_pages_per_country', label: '每国同步页数', placeholder: '5' },
+          { key: 'smstome_country_slugs', label: 'Lista de países', placeholder: 'united-kingdom,poland' },
+          { key: 'smstome_phone_attempts', label: 'Tentativas de número', placeholder: '3' },
+          { key: 'smstome_otp_timeout_seconds', label: 'Tempo de espera pelo SMS (segundos)', placeholder: '45' },
+          { key: 'smstome_poll_interval_seconds', label: 'Intervalo de polling (segundos)', placeholder: '5' },
+          { key: 'smstome_sync_max_pages_per_country', label: 'Páginas de sync por país', placeholder: '5' },
         ],
       },
     ],
@@ -327,11 +327,11 @@ const TAB_ITEMS = [
     icon: <ApiOutlined />,
     sections: [
       {
-        title: '管理面板',
-        desc: '用于 CLIProxyAPI 管理页登录',
+        title: 'Painel de Gerenciamento',
+        desc: 'Usado para login na página de gerenciamento do CLIProxyAPI',
         fields: [
           { key: 'cliproxyapi_base_url', label: 'API URL', placeholder: 'http://127.0.0.1:8317' },
-          { key: 'cliproxyapi_management_key', label: '管理口令', secret: true, placeholder: '默认 cliproxyapi' },
+          { key: 'cliproxyapi_management_key', label: 'Chave de gerenciamento', secret: true, placeholder: 'padrão: cliproxyapi' },
         ],
       },
     ],
@@ -343,12 +343,12 @@ const TAB_ITEMS = [
     sections: [
       {
         title: 'grok2api',
-        desc: '注册成功后自动导入到 grok2api 管理后台',
+        desc: 'Importa automaticamente para o painel grok2api após registro',
         fields: [
           { key: 'grok2api_url', label: 'API URL', placeholder: 'http://127.0.0.1:7860' },
           { key: 'grok2api_app_key', label: 'App Key', secret: true },
-          { key: 'grok2api_pool', label: 'Token Pool', placeholder: 'ssoBasic 或 ssoSuper' },
-          { key: 'grok2api_quota', label: 'Quota（可选）', placeholder: '留空按池默认值' },
+          { key: 'grok2api_pool', label: 'Token Pool', placeholder: 'ssoBasic ou ssoSuper' },
+          { key: 'grok2api_quota', label: 'Quota (opcional)', placeholder: 'Vazio = valor padrão do pool' },
         ],
       },
     ],
@@ -360,17 +360,17 @@ const TAB_ITEMS = [
     sections: [
       {
         title: 'Kiro Account Manager',
-        desc: '注册成功后自动写入 kiro-account-manager 的 accounts.json',
+        desc: 'Escreve automaticamente no accounts.json do kiro-account-manager após registro',
         fields: [
           {
             key: 'kiro_manager_path',
-            label: 'accounts.json 路径（可选）',
-            placeholder: '留空则自动使用系统默认路径',
+            label: 'Caminho do accounts.json (opcional)',
+            placeholder: 'Vazio = usa o caminho padrão do sistema',
           },
           {
             key: 'kiro_manager_exe',
-            label: 'Kiro Manager 可执行文件（可选）',
-            placeholder: '未安装 Rust 时可填写已安装的 KiroAccountManager.exe',
+            label: 'Executável do Kiro Manager (opcional)',
+            placeholder: 'Preencher com o KiroAccountManager.exe se Rust não estiver instalado',
           },
         ],
       },
@@ -378,19 +378,19 @@ const TAB_ITEMS = [
   },
   {
     key: 'contribution',
-    label: '贡献',
+    label: 'Contribuição',
     icon: <PlusOutlined />,
     sections: [],
   },
   {
     key: 'integrations',
-    label: '插件',
+    label: 'Plugins',
     icon: <ApiOutlined />,
     sections: [],
   },
   {
     key: 'security',
-    label: '安全',
+    label: 'Segurança',
     icon: <LockOutlined />,
     sections: [],
   },
@@ -571,11 +571,11 @@ function ConfigField({ field }: { field: FieldConfig }) {
   const isBooleanField = field.type === 'boolean'
   const helpText =
     field.key === 'default_executor'
-      ? '仅对支持的平台生效；ChatGPT、Cursor、Grok、Kiro、Tavily 支持浏览器模式，OpenBlockLabs 仅支持纯协议。'
+      ? 'Válido apenas para plataformas suportadas; ChatGPT, Cursor, Grok, Kiro, Tavily suportam modo navegador; OpenBlockLabs suporta apenas protocolo puro.'
       : field.key === 'email_domain_rule_enabled'
-      ? '仅 CF Worker 生效：开启后会校验域名级数，以及域名至少包含 2 个字母和 2 个数字。'
+      ? 'Apenas CF Worker: quando ativado, valida o nível do domínio e exige pelo menos 2 letras e 2 números no domínio.'
       : field.key === 'email_domain_level_count'
-      ? '例如 2=example.com，3=a.example.com，4=a.b.example.com。'
+      ? 'Ex: 2=example.com, 3=a.example.com, 4=a.b.example.com.'
       : undefined
 
   return (
@@ -588,7 +588,7 @@ function ConfigField({ field }: { field: FieldConfig }) {
       {options ? (
         <Select options={options} style={{ width: '100%' }} />
       ) : isBooleanField ? (
-        <Switch checkedChildren="开启" unCheckedChildren="关闭" />
+        <Switch checkedChildren="Ativado" unCheckedChildren="Desativado" />
       ) : field.secret ? (
         <Input.Password
           placeholder={field.placeholder}
@@ -635,8 +635,8 @@ function CFWorkerDomainPoolSection({ form }: { form: any }) {
 
   return (
     <Card
-      title="CF Worker 域名池"
-      extra={<span style={{ fontSize: 12, color: '#7a8ba3' }}>注册时会从已启用域名中随机选择一个</span>}
+      title="CF Worker - Pool de domínios"
+      extra={<span style={{ fontSize: 12, color: '#7a8ba3' }}>Um domínio habilitado será escolhido aleatoriamente no registro</span>}
       style={{ marginBottom: 16 }}
     >
       <Form.List name="cfworker_domains">
@@ -648,13 +648,13 @@ function CFWorkerDomainPoolSection({ form }: { form: any }) {
                 <Space key={key} align="start" style={{ display: 'flex' }}>
                   <Form.Item
                     {...restField}
-                    label={field.name === 0 ? '全部域名' : ''}
+                    label={field.name === 0 ? 'Todos os domínios' : ''}
                     style={{ flex: 1, marginBottom: 0 }}
                     rules={[
                       {
                         validator: async (_, value) => {
                           if (!String(value || '').trim()) {
-                            throw new Error('请输入域名')
+                            throw new Error('Insira um domínio')
                           }
                         },
                       },
@@ -678,15 +678,15 @@ function CFWorkerDomainPoolSection({ form }: { form: any }) {
                     )
                   }}
                 >
-                  删除
+                  Remover
                 </Button>
               </Space>
             )})}
             {fields.length === 0 ? (
-              <Typography.Text type="secondary">还没有配置域名。添加后即可在下方选择启用项。</Typography.Text>
+              <Typography.Text type="secondary">Nenhum domínio configurado ainda. Adicione para selecionar abaixo.</Typography.Text>
             ) : null}
             <Button type="dashed" onClick={() => add('')} icon={<PlusOutlined />} block>
-              添加域名
+              Adicionar domínio
             </Button>
           </div>
         )}
@@ -697,7 +697,7 @@ function CFWorkerDomainPoolSection({ form }: { form: any }) {
       </Form.Item>
 
       <div style={{ marginTop: 16 }}>
-        <div style={{ marginBottom: 8, fontWeight: 500 }}>已启用域名</div>
+        <div style={{ marginBottom: 8, fontWeight: 500 }}>Domínios habilitados</div>
         {enabledDomains.length > 0 ? (
           <Space wrap>
             {enabledDomains.map((domain) => (
@@ -715,12 +715,12 @@ function CFWorkerDomainPoolSection({ form }: { form: any }) {
             ))}
           </Space>
         ) : (
-          <Typography.Text type="secondary">暂无启用域名，点击下方域名即可启用。</Typography.Text>
+          <Typography.Text type="secondary">Nenhum domínio habilitado. Clique nos domínios abaixo para habilitar.</Typography.Text>
         )}
       </div>
 
       <div style={{ marginTop: 16 }}>
-        <div style={{ marginBottom: 8, fontWeight: 500 }}>点击切换启用状态</div>
+        <div style={{ marginBottom: 8, fontWeight: 500 }}>Clique para alternar status</div>
         {normalizedDomains.length > 0 ? (
           <Space wrap>
             {normalizedDomains.map((domain) => (
@@ -734,11 +734,11 @@ function CFWorkerDomainPoolSection({ form }: { form: any }) {
             ))}
           </Space>
         ) : (
-          <Typography.Text type="secondary">请先在上方添加域名。</Typography.Text>
+          <Typography.Text type="secondary">Adicione domínios acima primeiro.</Typography.Text>
         )}
       </div>
       <Typography.Text type="secondary" style={{ display: 'block', marginTop: 12 }}>
-        仅已启用域名会参与注册；点击已启用标签可直接移除。
+        Somente domínios habilitados participam do registro; clique na tag habilitada para remover.
       </Typography.Text>
     </Card>
   )
@@ -788,11 +788,11 @@ function SolverStatus() {
             <CloseCircleOutlined style={{ color: '#ef4444' }} />
           )}
           <span style={{ color: running ? '#10b981' : '#7a8ba3', fontWeight: 500 }}>
-            {running === null ? '检测中' : running ? '运行中' : '未运行'}
+            {running === null ? 'Verificando' : running ? 'Rodando' : 'Parado'}
           </span>
         </Space>
         <Button size="small" onClick={restartSolver}>
-          重启 Solver
+          Reiniciar Solver
         </Button>
       </div>
     </Card>
@@ -847,11 +847,11 @@ function IntegrationsPanel() {
     try {
       const result = await request
       await load()
-      message.success('操作完成')
-      showResultModal('操作结果', result, true)
+      message.success('Operação concluída')
+      showResultModal('Resultado da operação', result, true)
     } catch (e: any) {
-      message.error(e?.message || '操作失败')
-      showResultModal('操作结果', e?.message || e || '操作失败', false)
+      message.error(e?.message || 'Operação falhou')
+      showResultModal('Resultado da operação', e?.message || e || 'Operação falhou', false)
       await load()
     } finally {
       setBusy('')
@@ -865,11 +865,11 @@ function IntegrationsPanel() {
         method: 'POST',
         body: JSON.stringify({ platforms }),
       })
-      message.success(`${label} 回填完成：成功 ${d.success} / ${d.total}`)
-      showResultModal(`${label} 回填结果`, d, true)
+      message.success(`${label} preenchimento concluído: sucesso ${d.success} / ${d.total}`)
+      showResultModal(`${label} resultado do preenchimento`, d, true)
     } catch (e: any) {
-      message.error(e?.message || `${label} 回填失败`)
-      showResultModal(`${label} 回填结果`, e?.message || e || `${label} 回填失败`, false)
+      message.error(e?.message || `${label} preenchimento falhou`)
+      showResultModal(`${label} resultado do preenchimento`, e?.message || e || `${label} preenchimento falhou`, false)
     } finally {
       setBusy('')
     }
@@ -883,9 +883,9 @@ function IntegrationsPanel() {
         body: JSON.stringify({ data: { external_apps_update_mode: nextMode } }),
       })
       setUpdateMode(nextMode)
-      message.success(nextMode === 'tag' ? '已切换到 tag 模式' : '已切换到分支模式')
+      message.success(nextMode === 'tag' ? 'Modo tag ativado' : 'Modo branch ativado')
     } catch (e: any) {
-      message.error(e?.message || '切换失败')
+      message.error(e?.message || 'Falha ao alternar modo')
     } finally {
       setBusy('')
     }
@@ -918,7 +918,7 @@ function IntegrationsPanel() {
             }}
           >
             <Button type="primary" icon={<SaveOutlined />} onClick={() => {}} loading={false} block size="large">
-              {saved ? '已保存 ✓' : '保存配置'}
+              {saved ? 'Salvo ✓' : 'Salvar configuração'}
             </Button>
           </div>
         </div>
@@ -928,12 +928,12 @@ function IntegrationsPanel() {
         title={resultModal.title}
         onCancel={() => setResultModal((v) => ({ ...v, open: false }))}
         onOk={() => setResultModal((v) => ({ ...v, open: false }))}
-        okText="确定"
-        cancelText="取消"
+        okText="Confirmar"
+        cancelText="Cancelar"
         width={760}
       >
         <Typography.Paragraph style={{ marginBottom: 8, color: resultModal.ok ? '#10b981' : '#ef4444' }}>
-          {resultModal.ok ? '操作已完成。' : '操作失败。'}
+          {resultModal.ok ? 'Operação concluída.' : 'Operação falhou.'}
         </Typography.Paragraph>
         <pre
           style={{
@@ -953,7 +953,7 @@ function IntegrationsPanel() {
         </pre>
       </Modal>
 
-      <Card title="安装/更新策略">
+      <Card title="Estratégia de instalação/atualização">
         <Space wrap align="center">
           <Select
             style={{ width: 320 }}
@@ -966,21 +966,21 @@ function IntegrationsPanel() {
             loading={busy === 'update-mode'}
             onClick={() => updateInstallMode(updateMode)}
           >
-            保存策略
+            Salvar estratégia
           </Button>
         </Space>
       </Card>
 
-      <Card title="批量操作">
+      <Card title="Operações em lote">
         <Space wrap>
           <Button loading={busy === 'start-all'} onClick={() => doAction('start-all', apiFetch('/integrations/services/start-all', { method: 'POST' }))}>
-            启动全部（已安装）
+            Iniciar todos (instalados)
           </Button>
           <Button loading={busy === 'stop-all'} onClick={() => doAction('stop-all', apiFetch('/integrations/services/stop-all', { method: 'POST' }))}>
-            停止全部
+            Parar todos
           </Button>
           <Button loading={loading} onClick={load}>
-            刷新状态
+            Atualizar status
           </Button>
         </Space>
       </Card>
@@ -989,25 +989,25 @@ function IntegrationsPanel() {
         <Card key={item.name} title={item.label}>
           <Space direction="vertical" style={{ width: '100%' }}>
             <div>
-              状态：
+              Status:
               <Tag color={item.running ? 'green' : 'default'} style={{ marginLeft: 8 }}>
-                {item.running ? '运行中' : '未运行'}
+                {item.running ? 'Rodando' : 'Parado'}
               </Tag>
               <Tag color={item.repo_exists ? 'blue' : 'orange'} style={{ marginLeft: 8 }}>
-                {item.repo_exists ? '已安装' : '未安装'}
+                {item.repo_exists ? 'Instalado' : 'Não instalado'}
               </Tag>
               {item.pid ? <span style={{ marginLeft: 8 }}>PID: {item.pid}</span> : null}
             </div>
-            <div>插件目录：<Typography.Text copyable>{item.repo_path}</Typography.Text></div>
-            {item.url ? <div>地址：<Typography.Text copyable>{item.url}</Typography.Text></div> : null}
-            {item.management_url ? <div>管理页：<Typography.Text copyable>{item.management_url}</Typography.Text></div> : null}
-            {item.management_key ? <div>登录口令：<Typography.Text copyable>{item.management_key}</Typography.Text></div> : null}
-            <div>日志：<Typography.Text copyable>{item.log_path}</Typography.Text></div>
-            {item.last_error ? <div style={{ color: '#ef4444' }}>最近错误：{item.last_error}</div> : null}
+            <div>Diretório do plugin: <Typography.Text copyable>{item.repo_path}</Typography.Text></div>
+            {item.url ? <div>Endereço: <Typography.Text copyable>{item.url}</Typography.Text></div> : null}
+            {item.management_url ? <div>Página de gestão: <Typography.Text copyable>{item.management_url}</Typography.Text></div> : null}
+            {item.management_key ? <div>Senha de acesso: <Typography.Text copyable>{item.management_key}</Typography.Text></div> : null}
+            <div>Log: <Typography.Text copyable>{item.log_path}</Typography.Text></div>
+            {item.last_error ? <div style={{ color: '#ef4444' }}>Último erro: {item.last_error}</div> : null}
             <Space wrap>
               {item.management_url ? (
                 <Button onClick={() => window.open(item.management_url, '_blank')}>
-                  打开管理页
+                  Abrir gestão
                 </Button>
               ) : null}
               {!item.repo_exists ? (
@@ -1016,14 +1016,14 @@ function IntegrationsPanel() {
                   loading={busy === `install-${item.name}`}
                   onClick={() => doAction(`install-${item.name}`, apiFetch(`/integrations/services/${item.name}/install`, { method: 'POST' }))}
                 >
-                  安装最新版
+                  Instalar versão mais recente
                 </Button>
               ) : (
                 <Button
                   loading={busy === `install-${item.name}`}
                   onClick={() => doAction(`install-${item.name}`, apiFetch(`/integrations/services/${item.name}/install`, { method: 'POST' }))}
                 >
-                  更新到最新版
+                  Atualizar para versão mais recente
                 </Button>
               )}
               <Button
@@ -1031,20 +1031,20 @@ function IntegrationsPanel() {
                 disabled={!item.repo_exists}
                 onClick={() => doAction(`start-${item.name}`, apiFetch(`/integrations/services/${item.name}/start`, { method: 'POST' }))}
               >
-                启动
+                Iniciar
               </Button>
               <Button
                 loading={busy === `stop-${item.name}`}
                 onClick={() => doAction(`stop-${item.name}`, apiFetch(`/integrations/services/${item.name}/stop`, { method: 'POST' }))}
               >
-                停止
+                Parar
               </Button>
               <Button
                 danger
                 loading={busy === `uninstall-${item.name}`}
                 disabled={!item.repo_exists}
                 onClick={() => {
-                  const ok = window.confirm(`确认卸载 ${item.label}？\n会停止服务并删除本地插件目录。`)
+                  const ok = window.confirm(`Confirmar desinstalação de ${item.label}?\nO serviço será parado e o diretório local do plugin será removido.`)
                   if (!ok) return
                   doAction(
                     `uninstall-${item.name}`,
@@ -1052,14 +1052,14 @@ function IntegrationsPanel() {
                   )
                 }}
               >
-                卸载
+                Desinstalar
               </Button>
               {item.name === 'grok2api' ? (
                 <Button
                   loading={busy === 'backfill-grok'}
                   onClick={() => backfill(['grok'], 'Grok', 'backfill-grok')}
                 >
-                  回填现有 Grok 账号
+                  Preencher contas Grok existentes
                 </Button>
               ) : null}
               {item.name === 'kiro-manager' ? (
@@ -1067,7 +1067,7 @@ function IntegrationsPanel() {
                   loading={busy === 'backfill-kiro'}
                   onClick={() => backfill(['kiro'], 'Kiro', 'backfill-kiro')}
                 >
-                  回填现有 Kiro 账号
+                  Preencher contas Kiro existentes
                 </Button>
               ) : null}
             </Space>
@@ -1138,16 +1138,16 @@ function ContributionPanel({
   const redeemedAmountUSD = pickNumber(redeemData, ['redeemed_amount_usd', 'redeemed_amount', 'amount_usd'])
   const redeemSuccessText =
     redeemResponse
-      ? `提现成功！额度：${redeemedAmountUSD !== null ? formatDisplayNumber(redeemedAmountUSD, 2) : '-'} 兑换码：${redeemCode || '-'}`
+      ? `Saque realizado! Valor: ${redeemedAmountUSD !== null ? formatDisplayNumber(redeemedAmountUSD, 2) : '-'} Código: ${redeemCode || '-'}`
       : ''
 
   const fetchStats = async (silent = false, keyOverride?: string) => {
     if (!contributionEnabled) {
-      if (!silent) message.warning('请先开启贡献功能')
+      if (!silent) message.warning('Habilite a função de contribuição primeiro')
       return
     }
     if (!contributionServerUrl) {
-      if (!silent) message.error('请先填写服务器地址')
+      if (!silent) message.error('Preencha o endereço do servidor primeiro')
       return
     }
 
@@ -1163,10 +1163,10 @@ function ContributionPanel({
       })
       setStatsResponse(asRecord(data))
       if (!silent) {
-        message.success('额度信息已刷新')
+        message.success('Informações de cota atualizadas')
       }
     } catch (e: any) {
-      const detail = String(e?.message || '获取额度信息失败')
+      const detail = String(e?.message || 'Falha ao obter informações de cota')
       setStatsError(detail)
       if (!silent) {
         message.error(detail)
@@ -1178,19 +1178,19 @@ function ContributionPanel({
 
   const doRedeem = async () => {
     if (!contributionEnabled) {
-      message.warning('请先开启贡献功能')
+      message.warning('Habilite a função de contribuição primeiro')
       return
     }
     if (!contributionServerUrl) {
-      message.error('请先填写服务器地址')
+      message.error('Preencha o endereço do servidor primeiro')
       return
     }
     if (!contributionKey) {
-      message.error('请先填写 API Key')
+      message.error('Preencha a API Key primeiro')
       return
     }
 
-    const confirmed = window.confirm(`确认提现吗？\n将按 ${redeemAmount} 发起提现请求`)
+    const confirmed = window.confirm(`Confirmar saque?\nSolicitar saque no valor de ${redeemAmount}`)
     if (!confirmed) return
 
     setRedeeming(true)
@@ -1209,13 +1209,13 @@ function ContributionPanel({
       const amount = pickNumber(payload, ['redeemed_amount_usd', 'redeemed_amount', 'amount_usd'])
       setRedeemResponse(result)
       if (amount !== null || code) {
-        message.success(`提现成功！额度：${amount !== null ? formatDisplayNumber(amount, 2) : '-'} 兑换码：${code || '-'}`)
+        message.success(`Saque realizado! Valor: ${amount !== null ? formatDisplayNumber(amount, 2) : '-'} Código: ${code || '-'}`)
       } else {
-        message.success('提现成功')
+        message.success('Saque realizado com sucesso')
       }
       await fetchStats(true)
     } catch (e: any) {
-      const detail = String(e?.message || '提现失败')
+      const detail = String(e?.message || 'Falha ao realizar saque')
       setRedeemResponse({ ok: false, error: detail })
       message.error(detail)
     } finally {
@@ -1225,7 +1225,7 @@ function ContributionPanel({
 
   const doGenerateKey = async () => {
     if (!contributionServerUrl) {
-      message.error('请先填写服务器地址')
+      message.error('Preencha o endereço do servidor primeiro')
       return
     }
     setCreatingKey(true)
@@ -1239,15 +1239,15 @@ function ContributionPanel({
       const payload = asRecord(asRecord(result)?.data)
       const generated = pickString(payload, ['key', 'api_key', 'public_key'])
       if (!generated) {
-        throw new Error('服务端未返回可用 key')
+        throw new Error('Servidor não retornou uma key válida')
       }
       form.setFieldValue('contribution_key', generated)
-      message.success('已新建并填充 API Key，请点击保存配置')
+      message.success('API Key criada e preenchida. Clique em salvar configuração.')
       if (contributionEnabled) {
         await fetchStats(true, generated)
       }
     } catch (e: any) {
-      message.error(String(e?.message || '请求新建 key 失败'))
+      message.error(String(e?.message || 'Falha ao solicitar nova key'))
     } finally {
       setCreatingKey(false)
     }
@@ -1255,11 +1255,11 @@ function ContributionPanel({
 
   const doBindCustom = async () => {
     if (!customEmail.trim()) {
-      message.error('请输入邮箱')
+      message.error('Insira um e-mail')
       return
     }
     if (!customContributionUrl) {
-      message.error('请先填写自定义服务器地址')
+      message.error('Preencha o endereço do servidor personalizado primeiro')
       return
     }
     setBindingCustom(true)
@@ -1274,13 +1274,13 @@ function ContributionPanel({
       const token = pickString(asRecord(data), ['token'])
       if (token) {
         form.setFieldValue('custom_contribution_token', token)
-        message.success('绑定成功！token 已自动填充，请点击保存配置')
+        message.success('Vinculado com sucesso! Token preenchido automaticamente. Clique em salvar.')
         setCustomEmail('')
       } else {
-        message.success('绑定成功')
+        message.success('Vinculado com sucesso')
       }
     } catch (e: any) {
-      message.error(String(e?.message || '绑定失败'))
+      message.error(String(e?.message || 'Falha ao vincular'))
     } finally {
       setBindingCustom(false)
     }
@@ -1288,15 +1288,15 @@ function ContributionPanel({
 
   const fetchCustomStats = async () => {
     if (!contributionEnabled) {
-      message.warning('请先开启贡献功能')
+      message.warning('Habilite a função de contribuição primeiro')
       return
     }
     if (!customContributionUrl) {
-      message.error('请先填写自定义服务器地址')
+      message.error('Preencha o endereço do servidor personalizado primeiro')
       return
     }
     if (!customContributionToken) {
-      message.error('请先绑定邮箱获取 token')
+      message.error('Vincule seu e-mail para obter o token primeiro')
       return
     }
     setLoadingCustomStats(true)
@@ -1307,9 +1307,9 @@ function ContributionPanel({
       ])
       setCustomStatsResponse(asRecord(status))
       setCustomBalanceResponse(asRecord(balance))
-      message.success('信息已刷新')
+      message.success('Informações atualizadas')
     } catch (e: any) {
-      message.error(String(e?.message || '获取信息失败'))
+      message.error(String(e?.message || 'Falha ao obter informações'))
     } finally {
       setLoadingCustomStats(false)
     }
@@ -1317,28 +1317,28 @@ function ContributionPanel({
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      <Card title="配置">
+      <Card title="Configuração">
         <Alert
           type="warning"
           showIcon
           banner
           style={{ marginBottom: 12 }}
-          message="开启贡献模式后，注册成功账号将只上传到贡献服务器"
+          message="Com o modo contribuição ativo, contas registradas serão enviadas somente para o servidor de contribuição"
           description={(
             <>
-              <div>CPA / CodexProxy / Sub2API 自动上传会被停用，避免重复上报。</div>
-              <div>目前该功能在xem中转站测试中 有兴趣可以进群了解</div>
-              <div>中转站https://ai.xem8k5.top/ 群号634758974</div>
+              <div>Upload automático para CPA / CodexProxy / Sub2API será desativado para evitar duplicatas.</div>
+              <div>Esta função está em teste no relay xem. Entre no grupo para saber mais.</div>
+              <div>Relay: https://ai.xem8k5.top/ Grupo: 634758974</div>
             </>
           )}
         />
-        <Form.Item name="contribution_enabled" label="是否开启" valuePropName="checked">
-          <Switch checkedChildren="开启" unCheckedChildren="关闭" />
+        <Form.Item name="contribution_enabled" label="Ativar" valuePropName="checked">
+          <Switch checkedChildren="Ativado" unCheckedChildren="Desativado" />
         </Form.Item>
-        <Form.Item name="contribution_mode" label="贡献模式">
+        <Form.Item name="contribution_mode" label="Modo de contribuição">
           <Select>
-            <Select.Option value="codex">Codex2API（xem中转站）</Select.Option>
-            <Select.Option value="custom">自定义贡献系统</Select.Option>
+            <Select.Option value="codex">Codex2API (relay xem)</Select.Option>
+            <Select.Option value="custom">Sistema de contribuição personalizado</Select.Option>
           </Select>
         </Form.Item>
 
@@ -1346,14 +1346,14 @@ function ContributionPanel({
           <>
             <Form.Item
               name="contribution_server_url"
-              label="服务器地址"
-              rules={[{ required: true, message: '请输入服务器地址' }]}
+              label="Endereço do servidor"
+              rules={[{ required: true, message: 'Insira o endereço do servidor' }]}
             >
               <Input placeholder="http://new.xem8k5.top:7317/" />
             </Form.Item>
             <Form.Item name="contribution_key" label="API Key">
               <Input
-                placeholder="留空可点击右侧按钮自动创建"
+                placeholder="Deixe em branco e clique no botão à direita para criar automaticamente"
                 addonAfter={(
                   <Button
                     type="link"
@@ -1362,7 +1362,7 @@ function ContributionPanel({
                     onClick={() => { void doGenerateKey() }}
                     style={{ paddingInline: 0 }}
                   >
-                    没有key?请求新建
+                    Sem key? Criar nova
                   </Button>
                 )}
               />
@@ -1372,60 +1372,60 @@ function ContributionPanel({
           <>
             <Form.Item
               name="custom_contribution_url"
-              label="自定义服务器地址"
-              rules={[{ required: true, message: '请输入服务器地址' }]}
+              label="Endereço do servidor personalizado"
+              rules={[{ required: true, message: 'Insira o endereço do servidor' }]}
             >
               <Input placeholder="http://127.0.0.1:5000" />
             </Form.Item>
-            <Form.Item label="绑定邮箱">
+            <Form.Item label="Vincular e-mail">
               <Space.Compact style={{ width: '100%' }}>
                 <Input
-                  placeholder="输入邮箱以绑定账号"
+                  placeholder="Insira o e-mail para vincular à conta"
                   value={customEmail}
                   onChange={(e) => setCustomEmail(e.target.value)}
                   onPressEnter={() => { void doBindCustom() }}
                 />
                 <Button type="primary" loading={bindingCustom} onClick={() => { void doBindCustom() }}>
-                  绑定
+                  Vincular
                 </Button>
               </Space.Compact>
             </Form.Item>
             <Form.Item name="custom_contribution_token" label="Token">
-              <Input.TextArea placeholder="绑定邮箱后自动填充" rows={3} />
+              <Input.TextArea placeholder="Preenchido automaticamente após vincular o e-mail" rows={3} />
             </Form.Item>
           </>
         )}
 
         <Button type="primary" icon={<SaveOutlined />} onClick={onSave} loading={saving} block>
-          {saved ? '已保存 ✓' : '保存配置'}
+          {saved ? 'Salvo ✓' : 'Salvar configuração'}
         </Button>
       </Card>
 
       {!isCustomMode ? (
         <>
           <Card
-            title="信息"
+            title="Informações"
             extra={(
               <Button loading={loadingStats} onClick={() => { void fetchStats() }}>
-                刷新信息
+                Atualizar informações
               </Button>
             )}
           >
             {!contributionEnabled ? (
-              <Alert type="info" showIcon message="贡献功能已关闭，开启后可获取服务器与 key 信息。" />
+              <Alert type="info" showIcon message="Contribuição desabilitada. Habilite para ver informações do servidor e key." />
             ) : (
               <Space direction="vertical" style={{ width: '100%' }} size={12}>
                 {statsError ? <Alert type="error" showIcon message={statsError} /> : null}
                 <div>
-                  <Typography.Text strong>服务器信息</Typography.Text>
+                  <Typography.Text strong>Informações do servidor</Typography.Text>
                   <div style={{ marginTop: 8, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 8 }}>
-                    <Tag color="blue">账号数: {formatDisplayNumber(serverQuotaAccountCount)}</Tag>
-                    <Tag color="geekblue">总额度: {formatDisplayNumber(serverQuotaTotal)}</Tag>
-                    <Tag color="volcano">已用额度: {formatDisplayNumber(serverQuotaUsed)}</Tag>
-                    <Tag color="green">剩余额度: {formatDisplayNumber(serverQuotaRemaining)}</Tag>
-                    <Tag color="orange">已用占比: {formatDisplayPercent(serverQuotaUsedPercent)}</Tag>
-                    <Tag color="cyan">剩余占比: {formatDisplayPercent(serverQuotaRemainingPercent)}</Tag>
-                    <Tag color="purple">折算账号数: {formatDisplayNumber(serverQuotaRemainingAccounts, 2)}</Tag>
+                    <Tag color="blue">Contas: {formatDisplayNumber(serverQuotaAccountCount)}</Tag>
+                    <Tag color="geekblue">Cota total: {formatDisplayNumber(serverQuotaTotal)}</Tag>
+                    <Tag color="volcano">Cota usada: {formatDisplayNumber(serverQuotaUsed)}</Tag>
+                    <Tag color="green">Cota restante: {formatDisplayNumber(serverQuotaRemaining)}</Tag>
+                    <Tag color="orange">% usada: {formatDisplayPercent(serverQuotaUsedPercent)}</Tag>
+                    <Tag color="cyan">% restante: {formatDisplayPercent(serverQuotaRemainingPercent)}</Tag>
+                    <Tag color="purple">Contas restantes equivalentes: {formatDisplayNumber(serverQuotaRemainingAccounts, 2)}</Tag>
                   </div>
                 </div>
                 <div>
@@ -1437,22 +1437,22 @@ function ContributionPanel({
                   </Space>
                 </div>
                 <div>
-                  <Typography.Text strong>key 信息</Typography.Text>
+                  <Typography.Text strong>Detalhes da key</Typography.Text>
                   <div style={{ marginTop: 8, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 8 }}>
-                    <Tag color="blue">余额: {keyBalance ?? '-'}</Tag>
-                    <Tag color="geekblue">来源: {keySource}</Tag>
-                    <Tag color="cyan">绑定账号数: {boundAccounts ?? '-'}</Tag>
-                    <Tag color="purple">结算金额: {settlementAmount ?? '-'}</Tag>
+                    <Tag color="blue">Saldo: {keyBalance ?? '-'}</Tag>
+                    <Tag color="geekblue">Origem: {keySource}</Tag>
+                    <Tag color="cyan">Contas vinculadas: {boundAccounts ?? '-'}</Tag>
+                    <Tag color="purple">Valor liquidado: {settlementAmount ?? '-'}</Tag>
                   </div>
                 </div>
               </Space>
             )}
           </Card>
 
-          <Card title="提现">
+          <Card title="Saque">
             <Space direction="vertical" style={{ width: '100%' }}>
-              <Typography.Text>key 当前额度：{keyBalance ?? '-'}</Typography.Text>
-              <Form.Item label="提现金额" style={{ marginBottom: 0 }}>
+              <Typography.Text>Cota atual da key: {keyBalance ?? '-'}</Typography.Text>
+              <Form.Item label="Valor do saque" style={{ marginBottom: 0 }}>
                 <Select
                   value={redeemAmount}
                   onChange={setRedeemAmount}
@@ -1461,13 +1461,13 @@ function ContributionPanel({
                 />
               </Form.Item>
               <Button type="primary" danger onClick={() => { void doRedeem() }} loading={redeeming}>
-                提现确认
+                Confirmar saque
               </Button>
               {redeemResponse ? (
                 <Alert
                   type={redeemResponse.ok === false ? 'error' : 'success'}
                   showIcon
-                  message={redeemResponse.ok === false ? `提现失败：${String(redeemResponse.error || '-')}` : redeemSuccessText}
+                  message={redeemResponse.ok === false ? `Falha no saque: ${String(redeemResponse.error || '-')}` : redeemSuccessText}
                   description={<pre style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{formatResultText(redeemResponse)}</pre>}
                 />
               ) : null}
@@ -1476,31 +1476,31 @@ function ContributionPanel({
         </>
       ) : (
         <Card
-          title="信息"
+          title="Informações"
           extra={(
             <Button loading={loadingCustomStats} onClick={() => { void fetchCustomStats() }}>
-              刷新信息
+              Atualizar informações
             </Button>
           )}
         >
           {!contributionEnabled ? (
-            <Alert type="info" showIcon message="贡献功能已关闭，开启后可获取信息。" />
+            <Alert type="info" showIcon message="Contribuição desabilitada. Habilite para ver informações." />
           ) : !customContributionToken ? (
-            <Alert type="warning" showIcon message="请先绑定邮箱获取 token" />
+            <Alert type="warning" showIcon message="Vincule seu e-mail para obter o token primeiro" />
           ) : (
             <Space direction="vertical" style={{ width: '100%' }} size={12}>
               <div>
-                <Typography.Text strong>余额信息</Typography.Text>
+                <Typography.Text strong>Saldo</Typography.Text>
                 <div style={{ marginTop: 8 }}>
-                  <Tag color="blue">余额: {pickNumber(asRecord(customBalanceResponse), ['balance']) ?? '-'}</Tag>
+                  <Tag color="blue">Saldo: {pickNumber(asRecord(customBalanceResponse), ['balance']) ?? '-'}</Tag>
                 </div>
               </div>
               <div>
-                <Typography.Text strong>贡献记录</Typography.Text>
+                <Typography.Text strong>Histórico de contribuição</Typography.Text>
                 <div style={{ marginTop: 8 }}>
-                  <Tag color="green">成功: {pickNumber(asRecord(customStatsResponse), ['success_count']) ?? '-'}</Tag>
-                  <Tag color="orange">待处理: {pickNumber(asRecord(customStatsResponse), ['pending_count']) ?? '-'}</Tag>
-                  <Tag color="red">失败: {pickNumber(asRecord(customStatsResponse), ['failed_count']) ?? '-'}</Tag>
+                  <Tag color="green">Sucesso: {pickNumber(asRecord(customStatsResponse), ['success_count']) ?? '-'}</Tag>
+                  <Tag color="orange">Pendente: {pickNumber(asRecord(customStatsResponse), ['pending_count']) ?? '-'}</Tag>
+                  <Tag color="red">Falha: {pickNumber(asRecord(customStatsResponse), ['failed_count']) ?? '-'}</Tag>
                 </div>
               </div>
             </Space>
@@ -1537,7 +1537,7 @@ function SecurityPanel() {
 
   const handleEnable = async (values: { password: string; confirm: string }) => {
     if (values.password !== values.confirm) {
-      msg.error('两次输入的密码不一致')
+      msg.error('As senhas não coincidem')
       return
     }
     setLoading(true)
@@ -1547,7 +1547,7 @@ function SecurityPanel() {
         body: JSON.stringify({ password: values.password }),
       })
       localStorage.setItem('auth_token', d.access_token)
-      msg.success('密码保护已启用')
+      msg.success('Proteção por senha habilitada')
       enableForm.resetFields()
       await loadStatus()
     } catch (e: any) {
@@ -1562,7 +1562,7 @@ function SecurityPanel() {
     try {
       await apiFetch('/auth/disable', { method: 'POST' })
       localStorage.removeItem('auth_token')
-      msg.success('密码保护已关闭')
+      msg.success('Proteção por senha desabilitada')
       await loadStatus()
     } catch (e: any) {
       msg.error(e.message)
@@ -1573,7 +1573,7 @@ function SecurityPanel() {
 
   const handleChangePassword = async (values: { current_password: string; new_password: string; confirm: string }) => {
     if (values.new_password !== values.confirm) {
-      msg.error('两次输入的新密码不一致')
+      msg.error('As novas senhas não coincidem')
       return
     }
     setLoading(true)
@@ -1582,7 +1582,7 @@ function SecurityPanel() {
         method: 'POST',
         body: JSON.stringify({ current_password: values.current_password, new_password: values.new_password }),
       })
-      msg.success('密码已更新')
+      msg.success('Senha atualizada')
       pwForm.resetFields()
     } catch (e: any) {
       msg.error(e.message)
@@ -1612,7 +1612,7 @@ function SecurityPanel() {
         method: 'POST',
         body: JSON.stringify({ secret: totpSecret, code: values.code }),
       })
-      msg.success('双因素认证已启用')
+      msg.success('Autenticação de dois fatores habilitada')
       setTotpSetupState('idle')
       codeForm.resetFields()
       await loadStatus()
@@ -1627,7 +1627,7 @@ function SecurityPanel() {
     setLoading(true)
     try {
       await apiFetch('/auth/2fa/disable', { method: 'POST' })
-      msg.success('双因素认证已关闭')
+      msg.success('Autenticação de dois fatores desabilitada')
       await loadStatus()
     } catch (e: any) {
       msg.error(e.message)
@@ -1639,37 +1639,37 @@ function SecurityPanel() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
       <Card
-        title="访问密码保护"
+        title="Proteção por senha de acesso"
         extra={
           status?.has_password
-            ? <Tag color="green"><CheckCircleOutlined /> 已启用</Tag>
-            : <Tag color="default"><CloseCircleOutlined /> 未启用</Tag>
+            ? <Tag color="green"><CheckCircleOutlined /> Habilitado</Tag>
+            : <Tag color="default"><CloseCircleOutlined /> Não habilitado</Tag>
         }
       >
         {!status?.has_password ? (
           <Space direction="vertical" style={{ width: '100%' }}>
             <Typography.Text type="secondary">
-              启用后，访问页面需要输入密码。默认不开启，任何能访问此地址的人均可使用。
+              Quando habilitado, o acesso ao painel requer uma senha. Por padrão, qualquer pessoa com acesso ao endereço pode usar.
             </Typography.Text>
             <Form form={enableForm} layout="vertical" onFinish={handleEnable} requiredMark={false} style={{ maxWidth: 360, marginTop: 8 }}>
-              <Form.Item name="password" label="设置访问密码" rules={[{ required: true, message: '请输入密码' }, { min: 6, message: '至少 6 位' }]}>
-                <Input.Password placeholder="至少 6 位" />
+              <Form.Item name="password" label="Definir senha de acesso" rules={[{ required: true, message: 'Insira a senha' }, { min: 6, message: 'Mínimo 6 caracteres' }]}>
+                <Input.Password placeholder="Mínimo 6 caracteres" />
               </Form.Item>
-              <Form.Item name="confirm" label="确认密码" rules={[{ required: true, message: '请再次输入' }]}>
-                <Input.Password placeholder="再次输入密码" />
+              <Form.Item name="confirm" label="Confirmar senha" rules={[{ required: true, message: 'Insira novamente' }]}>
+                <Input.Password placeholder="Digite a senha novamente" />
               </Form.Item>
               <Form.Item style={{ marginBottom: 0 }}>
                 <Button type="primary" htmlType="submit" loading={loading} icon={<LockOutlined />}>
-                  启用密码保护
+                  Habilitar proteção por senha
                 </Button>
               </Form.Item>
             </Form>
           </Space>
         ) : (
           <Space direction="vertical" style={{ width: '100%' }}>
-            <Typography.Text type="secondary">当前已启用密码保护，关闭后任何人无需密码即可访问。</Typography.Text>
+            <Typography.Text type="secondary">Proteção por senha habilitada. Ao desabilitar, qualquer pessoa poderá acessar sem senha.</Typography.Text>
             <Button danger loading={loading} onClick={handleDisableAuth}>
-              关闭密码保护
+              Desabilitar proteção por senha
             </Button>
           </Space>
         )}
@@ -1677,73 +1677,73 @@ function SecurityPanel() {
 
       {status?.has_password && (
         <>
-          <Card title="修改密码">
+          <Card title="Alterar senha">
             <Form form={pwForm} layout="vertical" onFinish={handleChangePassword} requiredMark={false} style={{ maxWidth: 360 }}>
-              <Form.Item name="current_password" label="当前密码" rules={[{ required: true, message: '请输入当前密码' }]}>
-                <Input.Password placeholder="当前密码" />
+              <Form.Item name="current_password" label="Senha atual" rules={[{ required: true, message: 'Insira a senha atual' }]}>
+                <Input.Password placeholder="Senha atual" />
               </Form.Item>
-              <Form.Item name="new_password" label="新密码" rules={[{ required: true, message: '请输入新密码' }, { min: 6, message: '至少 6 位' }]}>
-                <Input.Password placeholder="新密码（至少 6 位）" />
+              <Form.Item name="new_password" label="Nova senha" rules={[{ required: true, message: 'Insira a nova senha' }, { min: 6, message: 'Mínimo 6 caracteres' }]}>
+                <Input.Password placeholder="Nova senha (mínimo 6 caracteres)" />
               </Form.Item>
-              <Form.Item name="confirm" label="确认新密码" rules={[{ required: true, message: '请再次输入' }]}>
-                <Input.Password placeholder="再次输入新密码" />
+              <Form.Item name="confirm" label="Confirmar nova senha" rules={[{ required: true, message: 'Insira novamente' }]}>
+                <Input.Password placeholder="Digite a nova senha novamente" />
               </Form.Item>
               <Form.Item style={{ marginBottom: 0 }}>
                 <Button type="primary" htmlType="submit" loading={loading} icon={<SaveOutlined />}>
-                  更新密码
+                  Atualizar senha
                 </Button>
               </Form.Item>
             </Form>
           </Card>
 
           <Card
-            title="双因素认证 (2FA)"
+            title="Autenticação de dois fatores (2FA)"
             extra={
               status?.has_totp
-                ? <Tag color="green"><CheckCircleOutlined /> 已启用</Tag>
-                : <Tag color="default"><CloseCircleOutlined /> 未启用</Tag>
+                ? <Tag color="green"><CheckCircleOutlined /> Habilitado</Tag>
+                : <Tag color="default"><CloseCircleOutlined /> Não habilitado</Tag>
             }
           >
             {status?.has_totp ? (
               <Space direction="vertical">
                 <Typography.Text type="secondary">
-                  登录时需输入 Google Authenticator / Authy 等 App 中的 6 位验证码。
+                  No login, além da senha, é necessário inserir o código de 6 dígitos do Google Authenticator / Authy ou app similar.
                 </Typography.Text>
                 <Button danger loading={loading} onClick={handleDisableTotp}>
-                  关闭双因素认证
+                  Desabilitar autenticação de dois fatores
                 </Button>
               </Space>
             ) : totpSetupState === 'idle' ? (
               <Space direction="vertical">
                 <Typography.Text type="secondary">
-                  启用后，登录时除密码外还需输入验证器 App 中的 6 位验证码，大幅提升安全性。
+                  Quando habilitado, além da senha, o login exige um código de 6 dígitos do app autenticador, aumentando muito a segurança.
                 </Typography.Text>
                 <Button type="primary" loading={loading} onClick={handleSetupTotp} icon={<SafetyOutlined />}>
-                  开启双因素认证
+                  Habilitar autenticação de dois fatores
                 </Button>
               </Space>
             ) : (
               <Space direction="vertical" style={{ width: '100%' }}>
-                <Typography.Text strong>1. 用验证器 App 扫描下方二维码</Typography.Text>
+                <Typography.Text strong>1. Escaneie o QR code abaixo com o app autenticador</Typography.Text>
                 <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start', flexWrap: 'wrap' }}>
                   <QRCode value={totpUri} size={180} />
                   <div style={{ flex: 1 }}>
-                    <Typography.Text type="secondary" style={{ fontSize: 12 }}>无法扫码？手动输入密钥：</Typography.Text>
+                    <Typography.Text type="secondary" style={{ fontSize: 12 }}>Não consegue escanear? Insira a chave manualmente:</Typography.Text>
                     <Typography.Paragraph copyable style={{ fontFamily: 'monospace', fontSize: 13, marginTop: 4 }}>
                       {totpSecret}
                     </Typography.Paragraph>
                   </div>
                 </div>
-                <Typography.Text strong>2. 输入 App 中显示的 6 位验证码以确认绑定</Typography.Text>
+                <Typography.Text strong>2. Insira o código de 6 dígitos exibido no app para confirmar</Typography.Text>
                 <Form form={codeForm} layout="inline" onFinish={handleEnableTotp}>
-                  <Form.Item name="code" rules={[{ required: true, message: '请输入验证码' }, { len: 6, message: '6 位数字' }]}>
+                  <Form.Item name="code" rules={[{ required: true, message: 'Insira o código' }, { len: 6, message: '6 dígitos' }]}>
                     <Input placeholder="000000" maxLength={6} style={{ width: 140, letterSpacing: 4, textAlign: 'center' }} />
                   </Form.Item>
                   <Form.Item>
-                    <Button type="primary" htmlType="submit" loading={loading}>确认启用</Button>
+                    <Button type="primary" htmlType="submit" loading={loading}>Confirmar ativação</Button>
                   </Form.Item>
                   <Form.Item>
-                    <Button onClick={() => setTotpSetupState('idle')}>取消</Button>
+                    <Button onClick={() => setTotpSetupState('idle')}>Cancelar</Button>
                   </Form.Item>
                 </Form>
               </Space>
@@ -1877,7 +1877,7 @@ export default function Settings() {
 
       if (domains.length > 0 && enabledDomains.length === 0) {
         setActiveTab('mailbox')
-        message.error('CF Worker 至少需要启用一个域名')
+        message.error('CF Worker requer pelo menos um domínio habilitado')
         return
       }
 
@@ -1896,7 +1896,7 @@ export default function Settings() {
       if (values.mail_provider === 'cfworker' && values.email_domain_rule_enabled) {
         if (!Number.isInteger(rawDomainLevelCount) || rawDomainLevelCount < 2) {
           setActiveTab('mailbox')
-          message.error('域名级数必须是大于等于 2 的整数')
+          message.error('O nível de domínio deve ser um inteiro maior ou igual a 2')
           return
         }
       }
@@ -1923,7 +1923,7 @@ export default function Settings() {
         email_domain_rule_enabled: values.email_domain_rule_enabled,
         email_domain_level_count: values.email_domain_level_count,
       })
-      message.success('保存成功')
+      message.success('Configuração salva com sucesso')
       setSaved(true)
       setTimeout(() => setSaved(false), 2000)
     } finally {
@@ -1968,14 +1968,14 @@ export default function Settings() {
             }}
           >
             <Button type="primary" icon={<SaveOutlined />} onClick={save} loading={saving} block>
-              {saved ? '已保存 ✓' : '保存配置'}
+              {saved ? 'Salvo ✓' : 'Salvar configuração'}
             </Button>
           </div>
         </div>
       ) : null}
       <div>
-        <h1 style={{ fontSize: 24, fontWeight: 'bold', margin: 0 }}>全局配置</h1>
-        <p style={{ color: '#7a8ba3', marginTop: 4 }}>配置将持久化保存，注册任务自动使用</p>
+        <h1 style={{ fontSize: 24, fontWeight: 'bold', margin: 0 }}>Configuração Global</h1>
+        <p style={{ color: '#7a8ba3', marginTop: 4 }}>As configurações são salvas permanentemente e usadas automaticamente nas tarefas de registro</p>
       </div>
 
       <div style={{ display: 'flex', gap: 24 }}>
@@ -2031,7 +2031,7 @@ export default function Settings() {
                   {showFloatingSaveButton ? <div style={{ height: 8 }} /> : null}
                   {!showFloatingSaveButton ? (
                     <Button type="primary" icon={<SaveOutlined />} onClick={save} loading={saving} block>
-                    {saved ? '已保存 ✓' : '保存配置'}
+                    {saved ? 'Salvo ✓' : 'Salvar configuração'}
                     </Button>
                   ) : null}
                 </>
