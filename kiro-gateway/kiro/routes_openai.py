@@ -67,22 +67,43 @@ api_key_header = APIKeyHeader(name="Authorization", auto_error=False)
 async def verify_api_key(auth_header: str = Security(api_key_header)) -> bool:
     """
     Verify API key in Authorization header.
-    
-    Expects format: "Bearer {PROXY_API_KEY}"
-    
+
+    Accepts:
+    - Master key: "Bearer {PROXY_API_KEY}"
+    - User key:   "Bearer kp-..." (stored in keys.db)
+
     Args:
         auth_header: Authorization header value
-    
+
     Returns:
         True if key is valid
-    
+
     Raises:
         HTTPException: 401 if key is invalid or missing
     """
-    if not auth_header or auth_header != f"Bearer {PROXY_API_KEY}":
-        logger.warning("Access attempt with invalid API key.")
+    if not auth_header:
+        raise HTTPException(status_code=401, detail="Missing API Key")
+
+    # Extract key value
+    key = auth_header[7:] if auth_header.startswith("Bearer ") else auth_header
+
+    # Master key check
+    if key == PROXY_API_KEY:
+        return True
+
+    # User key check
+    try:
+        from kiro.key_manager import validate_key
+        is_valid, reason, _ = validate_key(key)
+        if is_valid:
+            return True
+        logger.warning(f"Access denied: {reason}")
+        raise HTTPException(status_code=401, detail=reason)
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Key validation error: {e}")
         raise HTTPException(status_code=401, detail="Invalid or missing API Key")
-    return True
 
 
 # --- Router ---

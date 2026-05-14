@@ -12,6 +12,7 @@ import {
   LogoutOutlined,
   PlayCircleOutlined,
   ApiOutlined,
+  KeyOutlined,
 } from '@ant-design/icons'
 import ptBR from 'antd/locale/pt_BR'
 import Dashboard from '@/pages/Dashboard'
@@ -23,6 +24,7 @@ import TaskHistory from '@/pages/TaskHistory'
 import RunningTasks from '@/pages/RunningTasks'
 import Login from '@/pages/Login'
 import GatewayPage from '@/pages/GatewayPage'
+import Keys from '@/pages/Keys'
 import { darkTheme, lightTheme } from './theme'
 import { apiFetch, clearToken, getToken } from '@/lib/utils'
 
@@ -100,6 +102,7 @@ function AppContent() {
     if (path === '/settings') return ['/settings']
     if (path === '/running-tasks') return ['/running-tasks']
     if (path === '/gateway') return ['/gateway']
+    if (path === '/keys') return ['/keys']
     return ['/']
   }
 
@@ -144,6 +147,11 @@ function AppContent() {
       key: '/gateway',
       icon: <ApiOutlined />,
       label: 'Gateway API',
+    },
+    {
+      key: '/keys',
+      icon: <KeyOutlined />,
+      label: 'Keys',
     },
   ]
 
@@ -253,6 +261,7 @@ function AppContent() {
             <Route path="/proxies" element={<Proxies />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/gateway" element={<GatewayPage />} />
+            <Route path="/keys" element={<Keys />} />
           </Routes>
         </Content>
       </Layout>

@@ -91,14 +91,38 @@ async def verify_anthropic_api_key(
     Raises:
         HTTPException: 401 if key is invalid or missing
     """
-    # Check x-api-key first (Anthropic native)
-    if x_api_key and x_api_key == PROXY_API_KEY:
+    # Extract key from either header
+    key = None
+    if x_api_key:
+        key = x_api_key
+    elif authorization:
+        key = authorization[7:] if authorization.startswith("Bearer ") else authorization
+
+    if not key:
+        raise HTTPException(
+            status_code=401,
+            detail={
+                "type": "error",
+                "error": {
+                    "type": "authentication_error",
+                    "message": "Missing API key. Use x-api-key header or Authorization: Bearer."
+                }
+            }
+        )
+
+    # Master key check
+    if key == PROXY_API_KEY:
         return True
-    
-    # Fall back to Authorization: Bearer
-    if authorization and authorization == f"Bearer {PROXY_API_KEY}":
-        return True
-    
+
+    # User key check
+    try:
+        from kiro.key_manager import validate_key
+        is_valid, reason, _ = validate_key(key)
+        if is_valid:
+            return True
+    except Exception as e:
+        logger.error(f"Key validation error: {e}")
+
     logger.warning("Access attempt with invalid API key (Anthropic endpoint)")
     raise HTTPException(
         status_code=401,
