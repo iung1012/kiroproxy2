@@ -548,6 +548,18 @@ ACCOUNT_CACHE_TTL: int = int(os.getenv("ACCOUNT_CACHE_TTL", "43200"))
 STATE_SAVE_INTERVAL_SECONDS: int = int(os.getenv("STATE_SAVE_INTERVAL_SECONDS", "10"))
 
 # ==================================================================================================
+# Key Management Settings
+# ==================================================================================================
+
+# Enable multi-key management system (default: false)
+# When true: clients can authenticate with user-defined API keys (managed via /admin/keys)
+# When false: only PROXY_API_KEY is accepted
+KEY_MANAGEMENT_ENABLED: bool = os.getenv("KEY_MANAGEMENT_ENABLED", "false").lower() in ("true", "1", "yes")
+
+# Path to the SQLite database for key storage
+KEY_DB_PATH: str = os.getenv("KEY_DB_PATH", "keys.db")
+
+# ==================================================================================================
 # Application Version
 # ==================================================================================================
 

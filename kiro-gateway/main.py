@@ -78,6 +78,8 @@ from kiro.config import (
     ACCOUNT_SYSTEM,
     ACCOUNTS_CONFIG_FILE,
     ACCOUNTS_STATE_FILE,
+    KEY_MANAGEMENT_ENABLED,
+    KEY_DB_PATH,
     _warn_timeout_configuration,
 )
 from kiro.auth import KiroAuthManager
@@ -86,6 +88,7 @@ from kiro.model_resolver import ModelResolver
 from kiro.account_manager import AccountManager
 from kiro.routes_openai import router as openai_router
 from kiro.routes_anthropic import router as anthropic_router
+from kiro.routes_admin import router as admin_router
 from kiro.routes_ui import router as ui_router
 from kiro.exceptions import validation_exception_handler
 from kiro.debug_middleware import DebugLoggerMiddleware
@@ -334,6 +337,12 @@ async def lifespan(app: FastAPI):
     concurrent requests efficiently (fixes issue #24).
     """
     logger.info("Starting application... Creating state managers.")
+
+    # Initialize key management system
+    if KEY_MANAGEMENT_ENABLED:
+        from kiro.key_manager import initialize_key_manager
+        await initialize_key_manager(KEY_DB_PATH)
+        logger.info(f"Key management enabled (db: {KEY_DB_PATH})")
     
     # Create shared HTTP client with connection pooling
     # This reduces memory usage and enables connection reuse across requests
@@ -601,6 +610,9 @@ app.add_exception_handler(RequestValidationError, validation_exception_handler)
 # --- Route Registration ---
 # Web UI panel: /ui
 app.include_router(ui_router)
+
+# Admin API: /admin/keys (key management, requires master key)
+app.include_router(admin_router)
 
 # OpenAI-compatible API: /v1/models, /v1/chat/completions
 app.include_router(openai_router)

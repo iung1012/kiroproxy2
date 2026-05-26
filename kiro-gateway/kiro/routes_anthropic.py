@@ -25,8 +25,9 @@ Contains the /v1/messages endpoint compatible with Anthropic's Messages API.
 Reference: https://docs.anthropic.com/en/api/messages
 """
 
+import asyncio
 import json
-from typing import Optional
+from typing import AsyncGenerator, Optional
 
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, Request, Security, Header
@@ -34,7 +35,7 @@ from fastapi.responses import JSONResponse, StreamingResponse
 from fastapi.security import APIKeyHeader
 from loguru import logger
 
-from kiro.config import PROXY_API_KEY
+from kiro.config import PROXY_API_KEY, KEY_MANAGEMENT_ENABLED
 from kiro.models_anthropic import (
     AnthropicMessagesRequest,
     AnthropicCountTokensRequest,
@@ -63,6 +64,51 @@ except ImportError:
     debug_logger = None
 
 
+# ---------------------------------------------------------------------------
+# Usage tracking helpers
+# ---------------------------------------------------------------------------
+
+async def _tracked_stream_anthropic(gen: AsyncGenerator, key_id: str) -> AsyncGenerator:
+    """Yield all chunks from gen, then record token usage for key_id (Anthropic SSE)."""
+    captured_in, captured_out = 0, 0
+    async for chunk in gen:
+        yield chunk
+        try:
+            s = chunk if isinstance(chunk, str) else chunk.decode("utf-8", errors="ignore")
+            # Anthropic usage appears in message_delta event
+            if '"usage"' in s and "data:" in s:
+                for line in s.splitlines():
+                    if line.startswith("data:"):
+                        parsed = json.loads(line[5:].strip())
+                        u = parsed.get("usage") or {}
+                        if "input_tokens" in u:
+                            captured_in = u.get("input_tokens", 0)
+                        if "output_tokens" in u:
+                            captured_out = u.get("output_tokens", 0)
+        except Exception:
+            pass
+    try:
+        from kiro.key_manager import get_key_manager
+        asyncio.create_task(
+            get_key_manager().record_usage(key_id, captured_in, captured_out)
+        )
+    except Exception:
+        pass
+
+
+def _record_anthropic_usage_background(key_id: str, response_dict: dict) -> None:
+    try:
+        from kiro.key_manager import get_key_manager
+        u = response_dict.get("usage") or {}
+        asyncio.create_task(
+            get_key_manager().record_usage(
+                key_id, u.get("input_tokens", 0), u.get("output_tokens", 0)
+            )
+        )
+    except Exception:
+        pass
+
+
 # --- Security scheme ---
 # Anthropic uses x-api-key header instead of Authorization: Bearer
 anthropic_api_key_header = APIKeyHeader(name="x-api-key", auto_error=False)
@@ -71,57 +117,76 @@ auth_header = APIKeyHeader(name="Authorization", auto_error=False)
 
 
 async def verify_anthropic_api_key(
+    request: Request,
     x_api_key: Optional[str] = Security(anthropic_api_key_header),
-    authorization: Optional[str] = Security(auth_header)
-) -> bool:
+    authorization: Optional[str] = Security(auth_header),
+) -> None:
     """
     Verify API key for Anthropic API.
-    
-    Supports two authentication methods:
-    1. x-api-key header (Anthropic native)
-    2. Authorization: Bearer header (for compatibility)
-    
-    Args:
-        x_api_key: Value from x-api-key header
-        authorization: Value from Authorization header
-    
-    Returns:
-        True if key is valid
-    
-    Raises:
-        HTTPException: 401 if key is invalid or missing
+
+    Accepts:
+      1. x-api-key: {PROXY_API_KEY}            (master key, Anthropic-native)
+      2. Authorization: Bearer {PROXY_API_KEY}  (master key, compat)
+      3. x-api-key: sk-kiro-...                (user key, KEY_MANAGEMENT_ENABLED)
+      4. Authorization: Bearer sk-kiro-...
+
+    Sets request.state.key_id = None (master) or str (user key).
     """
-    # Extract key from either header
-    key = None
-    if x_api_key:
-        key = x_api_key
-    elif authorization:
-        key = authorization[7:] if authorization.startswith("Bearer ") else authorization
+    # Master key via x-api-key
+    if x_api_key and x_api_key == PROXY_API_KEY:
+        request.state.key_id = None
+        return
 
-    if not key:
-        raise HTTPException(
-            status_code=401,
-            detail={
-                "type": "error",
-                "error": {
-                    "type": "authentication_error",
-                    "message": "Missing API key. Use x-api-key header or Authorization: Bearer."
-                }
-            }
-        )
+    # Master key via Authorization: Bearer
+    if authorization and authorization == f"Bearer {PROXY_API_KEY}":
+        request.state.key_id = None
+        return
 
-    # Master key check
-    if key == PROXY_API_KEY:
-        return True
+    # User-defined keys
+    if KEY_MANAGEMENT_ENABLED:
+        from kiro.key_manager import get_key_manager
 
-    # User key check
-    try:
-        from kiro.key_manager import validate_key
-        is_valid, reason, _ = validate_key(key)
-        if is_valid:
-            return True
-    except Exception as e:
-        logger.error(f"Key validation error: {e}")
+        raw_key = None
+        if x_api_key and x_api_key.startswith("sk-kiro-"):
+            raw_key = x_api_key
+        elif authorization and authorization.startswith("Bearer sk-kiro-"):
+            raw_key = authorization[7:]
+
+        if raw_key:
+            result = await get_key_manager().validate_key(raw_key)
+            if result.is_valid:
+                request.state.key_id = result.key_id
+                request.state.key_name = result.key_name
+                return
+            if result.reason in ("rate_limited", "token_limit"):
+                headers = {}
+                if result.retry_after:
+                    headers["Retry-After"] = str(result.retry_after)
+                raise HTTPException(
+                    status_code=429,
+                    detail={
+                        "type": "error",
+                        "error": {
+                            "type": "rate_limit_error",
+                            "message": (
+                                f"Rate limit exceeded ({result.limit_type} limit "
+                                f"for {result.limit_window} window). "
+                                f"Retry after {result.retry_after}s."
+                            ),
+                        },
+                    },
+                    headers=headers,
+                )
+            raise HTTPException(
+                status_code=401,
+                detail={
+                    "type": "error",
+                    "error": {
+                        "type": "authentication_error",
+                        "message": f"Key {result.reason}.",
+                    },
+                },
+            )
 
     logger.warning("Access attempt with invalid API key (Anthropic endpoint)")
     raise HTTPException(
@@ -130,9 +195,9 @@ async def verify_anthropic_api_key(
             "type": "error",
             "error": {
                 "type": "authentication_error",
-                "message": "Invalid or missing API key. Use x-api-key header or Authorization: Bearer."
-            }
-        }
+                "message": "Invalid or missing API key. Use x-api-key header or Authorization: Bearer.",
+            },
+        },
     )
 
 
@@ -511,15 +576,19 @@ async def messages(
                                     else:
                                         debug_logger.discard_buffers()
                         
+                        _key_id = getattr(request.state, "key_id", None)
+                        _stream = stream_wrapper()
+                        if KEY_MANAGEMENT_ENABLED and _key_id:
+                            _stream = _tracked_stream_anthropic(_stream, _key_id)
                         return StreamingResponse(
-                            stream_wrapper(),
+                            _stream,
                             media_type="text/event-stream",
                             headers={
                                 "Cache-Control": "no-cache",
                                 "Connection": "keep-alive",
                             }
                         )
-                    
+
                     else:
                         # Non-streaming mode
                         anthropic_response = await collect_anthropic_response(
@@ -534,12 +603,15 @@ async def messages(
                         
                         await http_client.close()
                         logger.info(f"HTTP 200 - POST /v1/messages (non-streaming) - completed")
-                        
+
                         if debug_logger:
                             debug_logger.discard_buffers()
-                        
+
+                        _key_id = getattr(request.state, "key_id", None)
+                        if KEY_MANAGEMENT_ENABLED and _key_id:
+                            _record_anthropic_usage_background(_key_id, anthropic_response)
                         return JSONResponse(content=anthropic_response)
-                
+
                 else:
                     # ERROR - classify and decide
                     try:
@@ -872,15 +944,19 @@ async def messages(
                         else:
                             debug_logger.discard_buffers()
             
+            _key_id = getattr(request.state, "key_id", None)
+            _stream = stream_wrapper()
+            if KEY_MANAGEMENT_ENABLED and _key_id:
+                _stream = _tracked_stream_anthropic(_stream, _key_id)
             return StreamingResponse(
-                stream_wrapper(),
+                _stream,
                 media_type="text/event-stream",
                 headers={
                     "Cache-Control": "no-cache",
                     "Connection": "keep-alive",
                 }
             )
-        
+
         else:
             # Non-streaming mode - collect entire response
             anthropic_response = await collect_anthropic_response(
@@ -894,12 +970,15 @@ async def messages(
             )
             
             await http_client.close()
-            
+
             logger.info(f"HTTP 200 - POST /v1/messages (non-streaming) - completed")
-            
+
             if debug_logger:
                 debug_logger.discard_buffers()
-            
+
+            _key_id = getattr(request.state, "key_id", None)
+            if KEY_MANAGEMENT_ENABLED and _key_id:
+                _record_anthropic_usage_background(_key_id, anthropic_response)
             return JSONResponse(content=anthropic_response)
     
     except HTTPException as e:

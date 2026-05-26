@@ -26,8 +26,10 @@ Contains all API endpoints:
 - /v1/chat/completions: Chat completions
 """
 
+import asyncio
 import json
 from datetime import datetime, timezone
+from typing import AsyncGenerator
 
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, Security
 from fastapi.responses import JSONResponse, StreamingResponse
@@ -37,6 +39,7 @@ from loguru import logger
 from kiro.config import (
     PROXY_API_KEY,
     APP_VERSION,
+    KEY_MANAGEMENT_ENABLED,
 )
 from kiro.models_openai import (
     OpenAIModel,
@@ -60,50 +63,109 @@ except ImportError:
     debug_logger = None
 
 
+# ---------------------------------------------------------------------------
+# Usage tracking helpers
+# ---------------------------------------------------------------------------
+
+async def _tracked_stream(gen: AsyncGenerator, key_id: str) -> AsyncGenerator:
+    """Yield all chunks from gen, then record token usage for key_id."""
+    captured_in, captured_out = 0, 0
+    async for chunk in gen:
+        yield chunk
+        try:
+            s = chunk if isinstance(chunk, str) else chunk.decode("utf-8", errors="ignore")
+            if '"usage"' in s and s.startswith("data: ") and "[DONE]" not in s:
+                parsed = json.loads(s[6:].strip())
+                u = parsed.get("usage") or {}
+                if u:
+                    captured_in = u.get("prompt_tokens", 0)
+                    captured_out = u.get("completion_tokens", 0)
+        except Exception:
+            pass
+    # Fire-and-forget: record after stream exhausted
+    try:
+        from kiro.key_manager import get_key_manager
+        asyncio.create_task(
+            get_key_manager().record_usage(key_id, captured_in, captured_out)
+        )
+    except Exception:
+        pass
+
+
+def _record_usage_background(key_id: str, response_dict: dict) -> None:
+    """Schedule token usage recording for a non-streaming response."""
+    try:
+        from kiro.key_manager import get_key_manager
+        u = response_dict.get("usage") or {}
+        asyncio.create_task(
+            get_key_manager().record_usage(
+                key_id, u.get("prompt_tokens", 0), u.get("completion_tokens", 0)
+            )
+        )
+    except Exception:
+        pass
+
+
 # --- Security scheme ---
 api_key_header = APIKeyHeader(name="Authorization", auto_error=False)
 
 
-async def verify_api_key(auth_header: str = Security(api_key_header)) -> bool:
+async def verify_api_key(
+    request: Request,
+    auth_header: str = Security(api_key_header),
+) -> None:
     """
     Verify API key in Authorization header.
 
     Accepts:
-    - Master key: "Bearer {PROXY_API_KEY}"
-    - User key:   "Bearer kp-..." (stored in keys.db)
+      1. Master key  — Bearer {PROXY_API_KEY}  (unlimited, no tracking)
+      2. User key    — Bearer sk-kiro-...       (tracked, rate-limited)
+                       only when KEY_MANAGEMENT_ENABLED=true
 
-    Args:
-        auth_header: Authorization header value
-
-    Returns:
-        True if key is valid
-
-    Raises:
-        HTTPException: 401 if key is invalid or missing
+    Sets request.state.key_id = None (master) or str (user key).
     """
-    if not auth_header:
-        raise HTTPException(status_code=401, detail="Missing API Key")
+    # Master key — always accepted
+    if auth_header and auth_header == f"Bearer {PROXY_API_KEY}":
+        request.state.key_id = None
+        return
 
-    # Extract key value
-    key = auth_header[7:] if auth_header.startswith("Bearer ") else auth_header
+    # User-defined keys
+    if KEY_MANAGEMENT_ENABLED and auth_header and auth_header.startswith("Bearer "):
+        from kiro.key_manager import get_key_manager
+        raw_key = auth_header[7:]
+        result = await get_key_manager().validate_key(raw_key)
 
-    # Master key check
-    if key == PROXY_API_KEY:
-        return True
+        if result.is_valid:
+            request.state.key_id = result.key_id
+            request.state.key_name = result.key_name
+            return
 
-    # User key check
-    try:
-        from kiro.key_manager import validate_key
-        is_valid, reason, _ = validate_key(key)
-        if is_valid:
-            return True
-        logger.warning(f"Access denied: {reason}")
-        raise HTTPException(status_code=401, detail=reason)
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Key validation error: {e}")
-        raise HTTPException(status_code=401, detail="Invalid or missing API Key")
+        if result.reason in ("rate_limited", "token_limit"):
+            headers = {}
+            if result.retry_after:
+                headers["Retry-After"] = str(result.retry_after)
+            raise HTTPException(
+                status_code=429,
+                detail={
+                    "error": {
+                        "type": "rate_limit_error",
+                        "message": (
+                            f"Rate limit exceeded ({result.limit_type} limit "
+                            f"for {result.limit_window} window). "
+                            f"Retry after {result.retry_after}s."
+                        ),
+                    }
+                },
+                headers=headers,
+            )
+
+        raise HTTPException(
+            status_code=401,
+            detail={"error": {"type": "authentication_error", "message": f"Key {result.reason}."}},
+        )
+
+    logger.warning("Access attempt with invalid API key.")
+    raise HTTPException(status_code=401, detail="Invalid or missing API Key")
 
 
 # --- Router ---
@@ -439,8 +501,12 @@ async def chat_completions(request: Request, request_data: ChatCompletionRequest
                                     else:
                                         debug_logger.discard_buffers()
                         
-                        return StreamingResponse(stream_wrapper(), media_type="text/event-stream")
-                    
+                        _key_id = getattr(request.state, "key_id", None)
+                        _stream = stream_wrapper()
+                        if KEY_MANAGEMENT_ENABLED and _key_id:
+                            _stream = _tracked_stream(_stream, _key_id)
+                        return StreamingResponse(_stream, media_type="text/event-stream")
+
                     else:
                         # Non-streaming mode
                         openai_response = await collect_stream_response(
@@ -452,13 +518,16 @@ async def chat_completions(request: Request, request_data: ChatCompletionRequest
                             request_messages=messages_for_tokenizer,
                             request_tools=tools_for_tokenizer
                         )
-                        
+
                         await http_client.close()
                         logger.info(f"HTTP 200 - POST /v1/chat/completions (non-streaming) - completed")
-                        
+
                         if debug_logger:
                             debug_logger.discard_buffers()
-                        
+
+                        _key_id = getattr(request.state, "key_id", None)
+                        if KEY_MANAGEMENT_ENABLED and _key_id:
+                            _record_usage_background(_key_id, openai_response)
                         return JSONResponse(content=openai_response)
                 
                 else:
@@ -743,10 +812,14 @@ async def chat_completions(request: Request, request_data: ChatCompletionRequest
                         else:
                             debug_logger.discard_buffers()
             
-            return StreamingResponse(stream_wrapper(), media_type="text/event-stream")
-        
+            _key_id = getattr(request.state, "key_id", None)
+            _stream = stream_wrapper()
+            if KEY_MANAGEMENT_ENABLED and _key_id:
+                _stream = _tracked_stream(_stream, _key_id)
+            return StreamingResponse(_stream, media_type="text/event-stream")
+
         else:
-            
+
             # Non-streaming mode - collect entire response
             openai_response = await collect_stream_response(
                 http_client.client,
@@ -766,12 +839,15 @@ async def chat_completions(request: Request, request_data: ChatCompletionRequest
             # Write debug logs after non-streaming request completes
             if debug_logger:
                 debug_logger.discard_buffers()
-            
+
+            _key_id = getattr(request.state, "key_id", None)
+            if KEY_MANAGEMENT_ENABLED and _key_id:
+                _record_usage_background(_key_id, openai_response)
             return JSONResponse(content=openai_response)
-    
+
     except HTTPException as e:
         await http_client.close()
-        
+
         # Network errors (502/504 from request_with_retry) = RECOVERABLE
         # In legacy mode, we still log them but re-raise (no failover available)
         if e.status_code in (502, 504):
